@@ -28,6 +28,18 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     ProjectFourSynthAudioProcessor& audioProcessor;
-
+    
+    juce::Label appTitle;
+    
+    juce::Label oscillatorLabels[4];
+    juce::ComboBox waveChoices[4];
+    juce::Slider oscillatorGains[4];
+    juce::Label oscillatorGainLabels[4];
+    juce::Slider oscillatorPitchShiftSliders[4];
+    juce::Label oscillatorPitchShiftLabels[4];
+    juce::ToggleButton oscillatorActives[4];
+    
+    
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessorEditor)
 };

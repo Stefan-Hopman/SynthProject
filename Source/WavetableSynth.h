@@ -31,6 +31,8 @@ struct WavetableSynth_Parameters
         decayTime = params.decayTime;
         releaseTime = params.releaseTime;
         sustainLevel = params.sustainLevel;
+        gain = params.gain;
+        active = params.active;
         return *this;
     }
     WaveType waveType = WaveType::Sine;
@@ -38,6 +40,8 @@ struct WavetableSynth_Parameters
     float decayTime = 0.01f;
     float releaseTime = 0.01f;
     float sustainLevel = 1.0f;
+    float gain = 1.0f;
+    bool active = false;
 };
 
 
@@ -55,8 +59,10 @@ public:
     {
         return _params;
     }
-    
-   
+    // generates samples in the [beginSample, endSample) range (Standard Template Library-style range).
+    void render(juce::AudioBuffer<float>& buffer, const int& beginSample, const int& endSample);
+    // translates a MIDI message to the synthesizer’s parameters change.
+    void handleMidiEvent(const juce::MidiMessage& midiEvent);
     
 private:
     // Structs for keeping data
@@ -79,16 +85,12 @@ private:
     
     // converts a MIDI note number (an integer corresponding to a key on a MIDI keyboard) to frequency in Hz (assuming a certain tuning of the piano).
     static float midiNoteNumberToFrequency(int midiNoteNumber);
-    // translates a MIDI message to the synthesizer’s parameters change.
-    void handleMidiEvent(const juce::MidiMessage& midiEvent);
     // initializes 128 oscillators as wave table oscillators.
     void initializeOscillators();
     // update all 128 osicillators for a certain wave type
     void updateOscillators(WaveType wave);
     // updatate all 128 on a new envelope
     void updateOscillatorEnvelopes();
-    // generates samples in the [beginSample, endSample) range (Standard Template Library-style range).
-    void render(juce::AudioBuffer<float>& buffer, const int& beginSample, const int& endSample);
     
     
     

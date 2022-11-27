@@ -251,7 +251,7 @@ void WavetableSynth::render(juce::AudioBuffer<float>& buffer, const int& beginSa
         {
             for(int i = beginSample; i < endSample; i++)
             {
-                firstChannel[i] += gain * oscillator.applyADSR(oscillator.getSample());
+                firstChannel[i] += _params.gain * (gain * oscillator.applyADSR(oscillator.getSample()));
             }
         }
     }
@@ -261,7 +261,5 @@ void WavetableSynth::render(juce::AudioBuffer<float>& buffer, const int& beginSa
         auto* channelData = buffer.getWritePointer(channel);
         std::copy(firstChannel + beginSample, firstChannel + endSample, channelData + beginSample);
     }
-    
-    
 }
 
