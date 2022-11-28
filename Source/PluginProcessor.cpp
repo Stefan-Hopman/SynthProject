@@ -90,6 +90,55 @@ void ProjectFourSynthAudioProcessor::changeProgramName (int index, const juce::S
 {
 }
 
+void ProjectFourSynthAudioProcessor::updateParameters()
+{
+    float oscillatorOneGain = apvts.getRawParameterValue("Oscillator One Gain")->load();
+    float oscillatorTwoGain = apvts.getRawParameterValue("Oscillator Two Gain")->load();
+    float oscillatorThreeGain = apvts.getRawParameterValue("Oscillator Three Gain")->load();
+    float oscillatorFourGain = apvts.getRawParameterValue("Oscillator Four Gain")->load();
+    bool oscillatorOneOn = apvts.getRawParameterValue("Oscillator One On")->load();
+    bool oscillatorTwoOn = apvts.getRawParameterValue("Oscillator Two On")->load();
+    bool oscillatorThreeOn = apvts.getRawParameterValue("Oscillator Three On")->load();
+    bool oscillatorFourOn = apvts.getRawParameterValue("Oscillator Four On")->load();
+    
+    //WaveType waveChoice = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type")->load());
+    WaveType waveChoiceOne = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator One")->load());
+    WaveType waveChoiceTwo = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Two")->load());
+    WaveType waveChoiceThree = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Three")->load());
+    WaveType waveChoiceFour = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Four")->load());
+    
+    float oscillatorOnePitchShift = apvts.getRawParameterValue("Oscillator One Pitch Shift")->load();
+    float oscillatorTwoPitchShift = apvts.getRawParameterValue("Oscillator Two Pitch Shift")->load();
+    float oscillatorThreePitchShift = apvts.getRawParameterValue("Oscillator Three Pitch Shift")->load();
+    float oscillatorFourPitchShift = apvts.getRawParameterValue("Oscillator Four Pitch Shift")->load();
+    
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcessor::createParameterLayout()
+{
+    auto attributes = juce::AudioParameterChoiceAttributes().withLabel ("selected");
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator One Gain", "Oscillator One Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Gain", "Oscillator Two Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Three Gain", "Oscillator Three Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Four Gain", "Oscillator Four Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator One On", "Oscillator One On", false));
+    layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator Two On", "Oscillator Two On", false));
+    layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator Three On", "Oscillator Three On", false));
+    layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator Four On", "Oscillator Four On", false));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator One Pitch Shift", "Oscillator One Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Pitch Shift", "Oscillator Two Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Three Pitch Shift", "Oscillator Three Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Four Pitch Shift", "Oscillator Four Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator One", "Wave Type Oscillator One", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Two", "Wave Type Oscillator Two", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Three", "Wave Type Oscillator Three", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Four", "Wave Type Oscillator Four", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
+
+    return layout;
+   
+}
+
 //==============================================================================
 void ProjectFourSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {

@@ -41,5 +41,23 @@ private:
     
     
     
+    // Attachments
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorOneGainAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorTwoGainAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorThreeGainAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorFourGainAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> oscillatorOneActiveAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> oscillatorTwoActiveAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> oscillatorThreeActiveAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> oscillatorFourActiveAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorOnePitchShiftAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorTwoPitchShiftAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorThreePitchShiftAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorFourPitchShiftAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> waveChoiceOneAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> waveChoiceTwoAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> waveChoiceThreeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> waveChoiceFourAttachment;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessorEditor)
 };
