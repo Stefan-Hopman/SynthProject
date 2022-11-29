@@ -97,12 +97,20 @@ void WavetableSynth::initializeOscillators()
     _oscillators.clear();
     // an oscillator for every MIDI note possibilty
     constexpr auto OSCILLATOR_COUNT = 128;
+    std::vector<std::vector<float>> waveTables;
     // generates data for sine wave;
     const auto sineWaveTable = generateSineWaveTable();
+    const auto sawtoothWaveTable = generateSawtoothWaveTable();
+    const auto triangleWaveTable = generateTriangularWaveTable();
+    const auto squareWaveTable = generateSquareWaveTable();
+    waveTables.push_back(sineWaveTable);
+    waveTables.push_back(sawtoothWaveTable);
+    waveTables.push_back(triangleWaveTable);
+    waveTables.push_back(squareWaveTable);
     // initiliaze the oscillators
     for (auto i = 0; i < OSCILLATOR_COUNT; ++i)
     {
-        _oscillators.emplace_back(sineWaveTable, _sampleRate);
+        _oscillators.emplace_back(waveTables, _sampleRate);
         
     }
 }
@@ -110,35 +118,13 @@ void WavetableSynth::initializeOscillators()
 // called whenevr a new wave type is selected
 void WavetableSynth::updateOscillators(WaveType wave)
 {
-    // clear the data of the oscillators
-    _oscillators.clear();
+    
     // an oscillator for every MIDI note possibilty
     constexpr auto OSCILLATOR_COUNT = 128;
-    // generates data for the sine wave
-    std::vector<float> waveTable;
-    if(wave == WaveType::Sine)
-    {
-        waveTable = generateSineWaveTable();
-    }
-    else if (wave == WaveType::Sawtooth)
-    {
-        waveTable = generateSawtoothWaveTable();
-    }
-    else if (wave == WaveType::Triangle)
-    {
-        waveTable = generateTriangularWaveTable();
-    }
-    else if (wave == WaveType::Square)
-    {
-        waveTable = generateSquareWaveTable();
-    }
-    else
-    {
-        waveTable = generateSineWaveTable();
-    }
+    const int waveTableIndex = static_cast<int>(wave);
     for (auto i = 0; i < OSCILLATOR_COUNT; ++i)
     {
-        _oscillators.emplace_back(waveTable, _sampleRate);
+        _oscillators[i].setWaveIndex(waveTableIndex);
     }
     
 }
@@ -169,7 +155,6 @@ void WavetableSynth::processBlock(juce::AudioBuffer<float>& buffer,
                                   juce::MidiBuffer& midiMessages)
 {
     auto currentSample = 0;
-
     for (const auto midiMetadata : midiMessages)
     {
         const auto message = midiMetadata.getMessage(); // retrieve the MIDI message
@@ -188,7 +173,7 @@ void WavetableSynth::handleMidiEvent(const juce::MidiMessage& midiMessage)
    
     if (midiMessage.isNoteOn())
     {
-        
+    
         const auto oscillatorId = midiMessage.getNoteNumber();
         float frequency = midiNoteNumberToFrequency(oscillatorId);
         _oscillators[oscillatorId].setFrequency(frequency);
@@ -243,23 +228,29 @@ void WavetableSynth::render(juce::AudioBuffer<float>& buffer, const int& beginSa
     auto* firstChannel = buffer.getWritePointer(0);
     // check each oscillator if its on and if they need to be rendered.
     // A constant gain because has its own adsr, so apply a dynamic gain can cause clicks
-    float gain = 0.12589f;
-    
-    for (auto& oscillator : _oscillators)
+    float onGain = 1.0f;
+    if (_params.active == false)
     {
-        if (oscillator.isPlaying())
+        onGain = 0.f;
+    }
+        for (auto& oscillator : _oscillators)
         {
-            for(int i = beginSample; i < endSample; i++)
+            if (oscillator.isPlaying())
             {
-                firstChannel[i] += _params.gain * (gain * oscillator.applyADSR(oscillator.getSample()));
+                for(int i = beginSample; i < endSample; i++)
+                {
+                    buffer.setSample(0, i, buffer.getSample(0, i) + (_params.gain * onGain * oscillator.applyADSR(oscillator.getSample())));
+                }
             }
         }
-    }
-    // copy the data from first channel to all the other channels
-    for (int channel = 1; channel < buffer.getNumChannels(); ++channel)
-    {
-        auto* channelData = buffer.getWritePointer(channel);
-        std::copy(firstChannel + beginSample, firstChannel + endSample, channelData + beginSample);
-    }
+        // copy the data from first channel to all the other channels
+        for (int channel = 1; channel < buffer.getNumChannels(); ++channel)
+        {
+            auto* channelData = buffer.getWritePointer(channel);
+            std::copy(firstChannel + beginSample, firstChannel + endSample, channelData + beginSample);
+        }
+        
+    
+    
 }
 

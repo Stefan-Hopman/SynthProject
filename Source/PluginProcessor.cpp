@@ -92,25 +92,29 @@ void ProjectFourSynthAudioProcessor::changeProgramName (int index, const juce::S
 
 void ProjectFourSynthAudioProcessor::updateParameters()
 {
-    float oscillatorOneGain = apvts.getRawParameterValue("Oscillator One Gain")->load();
-    float oscillatorTwoGain = apvts.getRawParameterValue("Oscillator Two Gain")->load();
-    float oscillatorThreeGain = apvts.getRawParameterValue("Oscillator Three Gain")->load();
-    float oscillatorFourGain = apvts.getRawParameterValue("Oscillator Four Gain")->load();
-    bool oscillatorOneOn = apvts.getRawParameterValue("Oscillator One On")->load();
-    bool oscillatorTwoOn = apvts.getRawParameterValue("Oscillator Two On")->load();
-    bool oscillatorThreeOn = apvts.getRawParameterValue("Oscillator Three On")->load();
-    bool oscillatorFourOn = apvts.getRawParameterValue("Oscillator Four On")->load();
+
+    AdditiveWavetableSynth_Parameters waveTableSynthParams = additiveWaveTableSynth.getParameters();
+    waveTableSynthParams.gains[0] = powf(10.f, apvts.getRawParameterValue("Oscillator One Gain")->load() / 20.f);
+    waveTableSynthParams.gains[1] = powf(10.f, apvts.getRawParameterValue("Oscillator Two Gain")->load() /20.f);
+    waveTableSynthParams.gains[2] = powf(10.f, apvts.getRawParameterValue("Oscillator Three Gain")->load()/ 20.f);
+    waveTableSynthParams.gains[3] = powf(10.f, apvts.getRawParameterValue("Oscillator Four Gain")->load() / 20.f);
     
-    //WaveType waveChoice = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type")->load());
-    WaveType waveChoiceOne = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator One")->load());
-    WaveType waveChoiceTwo = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Two")->load());
-    WaveType waveChoiceThree = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Three")->load());
-    WaveType waveChoiceFour = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Four")->load());
+    waveTableSynthParams.activeStates[0] = apvts.getRawParameterValue("Oscillator One On")->load();
+    waveTableSynthParams.activeStates[1] = apvts.getRawParameterValue("Oscillator Two On")->load();
+    waveTableSynthParams.activeStates[2] = apvts.getRawParameterValue("Oscillator Three On")->load();
+    waveTableSynthParams.activeStates[3] = apvts.getRawParameterValue("Oscillator Four On")->load();
+    
+    waveTableSynthParams.waveTypes[0] = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator One")->load());
+    waveTableSynthParams.waveTypes[1] = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Two")->load());
+    waveTableSynthParams.waveTypes[2] = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Three")->load());
+    waveTableSynthParams.waveTypes[3] = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Four")->load());
     
     float oscillatorOnePitchShift = apvts.getRawParameterValue("Oscillator One Pitch Shift")->load();
     float oscillatorTwoPitchShift = apvts.getRawParameterValue("Oscillator Two Pitch Shift")->load();
     float oscillatorThreePitchShift = apvts.getRawParameterValue("Oscillator Three Pitch Shift")->load();
     float oscillatorFourPitchShift = apvts.getRawParameterValue("Oscillator Four Pitch Shift")->load();
+    
+    additiveWaveTableSynth.setParameters(waveTableSynthParams);
     
 }
 
@@ -144,7 +148,7 @@ void ProjectFourSynthAudioProcessor::prepareToPlay (double sampleRate, int sampl
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    synth.prepareToPlay(sampleRate);
+    additiveWaveTableSynth.prepareToPlay(sampleRate);
 }
 
 void ProjectFourSynthAudioProcessor::releaseResources()
@@ -184,7 +188,7 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-
+    updateParameters();
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -206,7 +210,7 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
 
         // ..do something to the data...
     }
-    synth.processBlock(buffer, midiMessages);
+    additiveWaveTableSynth.processBlock(buffer, midiMessages);
 }
 
 //==============================================================================

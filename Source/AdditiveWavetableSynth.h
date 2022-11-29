@@ -45,8 +45,8 @@ struct AdditiveWavetableSynth_Parameters
 class AdditiveWavetableSynth
 {
 public:
-    AdditiveWavetableSynth() = delete;
-    AdditiveWavetableSynth(const int& synthCount);
+    AdditiveWavetableSynth(){};
+    AdditiveWavetableSynth(const int synthCount);
     ~AdditiveWavetableSynth();
     // sets the sample rate for processing (analogously to prepareToPlay() from PluginProcessor).
     void prepareToPlay(double& sampleRate);
@@ -68,5 +68,5 @@ private:
     AdditiveWavetableSynth_Parameters _params;
     int _synthCount = 0;;
     double _sampleRate;
-    std::vector<std::unique_ptr<WavetableSynth>> _synths;
+    std::vector<WavetableSynth> _synths;
 };

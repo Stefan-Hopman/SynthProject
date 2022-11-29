@@ -48,6 +48,13 @@ struct WavetableSynth_Parameters
 class WavetableSynth
 {
 public:
+    WavetableSynth() = default;
+    WavetableSynth(const WavetableSynth&) = default;
+    
+   
+    
+    WavetableSynth(WavetableSynth&&) = default;
+    
     // sets the sample rate for processing (analogously to prepareToPlay() from PluginProcessor).
     void prepareToPlay(double& sampleRate);
     // called from the PluginProcessor's processBlock()

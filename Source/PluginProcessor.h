@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "WavetableSynth.h"
+#include "AdditiveWavetableSynth.h"
 //==============================================================================
 /**
 */
@@ -60,6 +60,7 @@ public:
 private:
     //==============================================================================
     void updateParameters();
+    AdditiveWavetableSynth additiveWaveTableSynth = AdditiveWavetableSynth(4);
     WavetableSynth synth;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessor)
 };

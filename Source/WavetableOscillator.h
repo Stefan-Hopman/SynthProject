@@ -13,12 +13,13 @@
 #include <vector>
 #include "ADSR.h"
 
+
 class WavetableOscillator
 {
 public:
-    WavetableOscillator(std::vector<float> waveTable, double sampleRate);
-    WavetableOscillator(const WavetableOscillator&) = delete;
-    WavetableOscillator& operator=(const WavetableOscillator&) = delete;
+    WavetableOscillator(std::vector<std::vector<float>> waveTables, double sampleRate);
+    WavetableOscillator(const WavetableOscillator&) = default;
+    WavetableOscillator& operator=(const WavetableOscillator&) = default;
     WavetableOscillator(WavetableOscillator&&) = default;
     WavetableOscillator& operator=(WavetableOscillator&&) = default;
     
@@ -27,21 +28,22 @@ public:
     void setADSR(const Stefan::ADSR::Parameters& ADSRParameters);
     void getSamples(float* buffer, const int& beginSample, const int &endSample);
     void setFrequency(float& frequency);
+    void setWaveIndex(const int& waveIndex);
     void noteOff();
     void stop();
     
     
     bool isPlaying() const;
-    
 private:
     Stefan::ADSR _ADSRManager;
     Stefan::ADSR::Parameters _ADSRParams;
+    bool releaseComplete = false;
     float interpolateLinearly() const;
-    std::vector<float> waveTable;
+    std::vector<std::vector<float>> waveTables;
     double _sampleRate = 44100.0;
     float index = 0.f;
     float indexIncrement = 0.f;
-    
+    int _waveIndex = 0;
     
     
 };

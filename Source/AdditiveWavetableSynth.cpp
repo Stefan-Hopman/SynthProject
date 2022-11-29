@@ -10,24 +10,40 @@
 
 #include "AdditiveWavetableSynth.h"
 
-AdditiveWavetableSynth::AdditiveWavetableSynth(const int& synthCount)
+AdditiveWavetableSynth::AdditiveWavetableSynth(const int synthCount)
 {
     _synthCount = synthCount;
     // Create a number of synths corresponding to the synth count;
     for(int i = 0; i < synthCount; i++)
     {
-        WavetableSynth *synth;
-        _synths.emplace_back(synth);
+        
+        WavetableSynth synthObj;
+        
+        _synths.emplace_back(synthObj);
+    }
+    for(int i = 0; i < synthCount; i++)
+    {
+        _params.gains.emplace_back(1.f);
+        _params.activeStates.emplace_back(false);
+        _params.waveTypes.emplace_back(WaveType::Sine);
+    }
+    for(int i = 0; i < synthCount; i++)
+    {
+        WavetableSynth_Parameters synthParameters;
+        synthParameters.attackTime = _params.attackTime;
+        synthParameters.releaseTime = _params.releaseTime;
+        synthParameters.sustainLevel = _params.sustainLevel;
+        synthParameters.decayTime = _params.decayTime;
+        synthParameters.active = _params.activeStates[i];
+        synthParameters.waveType = _params.waveTypes[i];
+        synthParameters.gain = _params.gains[i];
+        _synths[i].setParameters(synthParameters);
     }
 }
 
 AdditiveWavetableSynth::~AdditiveWavetableSynth()
 {
-    // release memory of additive synths
-    for(int i = 0; i < _synthCount; i++)
-    {
-        _synths[i].release();
-    }
+   
 }
 
 void AdditiveWavetableSynth::prepareToPlay(double& sampleRate)
@@ -35,30 +51,23 @@ void AdditiveWavetableSynth::prepareToPlay(double& sampleRate)
     _sampleRate = sampleRate;
     for (int i = 0; i < _synthCount; i++)
     {
-        _synths[i]->prepareToPlay(sampleRate);
+        _synths[i].prepareToPlay(sampleRate);
     }
 }
 
 void AdditiveWavetableSynth::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    auto currentSample = 0;
-    for (const auto midiMetadata : midiMessages)
+    for (int i = 0; i < _synthCount; i++)
     {
-        const auto message = midiMetadata.getMessage(); // retrieve the MIDI message
-        const auto messagePosition = static_cast<int>(message.getTimeStamp()); // getting the time stamp of that MIDI message
-        render(buffer, currentSample, messagePosition); // render the audio samples of
-        currentSample = messagePosition;
-        handleMidiEvent(message);
+        _synths[i].processBlock(buffer, midiMessages);
     }
-    // render the rest of the audio samples
-    render(buffer, currentSample, buffer.getNumSamples());
 }
 
 void AdditiveWavetableSynth::render(juce::AudioBuffer<float>& buffer, const int& beginSample, const int& endSample)
 {
     for (int i = 0; i < _synthCount; i++)
     {
-        _synths[i]->render(buffer, beginSample, endSample);
+        _synths[i].render(buffer, beginSample, endSample);
     }
 }
 
@@ -66,7 +75,7 @@ void AdditiveWavetableSynth::handleMidiEvent(const juce::MidiMessage& midiEvent)
 {
     for (int i = 0; i < _synthCount; i++)
     {
-        _synths[i]->handleMidiEvent(midiEvent);
+        _synths[i].handleMidiEvent(midiEvent);
     }
 }
 
@@ -75,7 +84,7 @@ void AdditiveWavetableSynth::setParameters(const AdditiveWavetableSynth_Paramete
 {
     for (int i = 0; i < _synthCount; i++)
     {
-        WavetableSynth_Parameters wavetableParams;
+        WavetableSynth_Parameters wavetableParams = _synths[i].getParameters();
         wavetableParams.active = params.activeStates[i];
         wavetableParams.gain = params.gains[i];
         wavetableParams.attackTime = params.attackTime;
@@ -83,7 +92,7 @@ void AdditiveWavetableSynth::setParameters(const AdditiveWavetableSynth_Paramete
         wavetableParams.decayTime = params.decayTime;
         wavetableParams.sustainLevel = params.sustainLevel;
         wavetableParams.waveType = params.waveTypes[i];
-        _synths[i]->setParameters(wavetableParams);
+        _synths[i].setParameters(wavetableParams);
     }
     
 }

@@ -12,7 +12,7 @@
 #include <cmath>
 
 
-WavetableOscillator::WavetableOscillator(std::vector<float> waveTable, double sampleRate) : waveTable{std::move(waveTable)}, _sampleRate{sampleRate}
+WavetableOscillator::WavetableOscillator(std::vector<std::vector<float>> waveTables, double sampleRate) : waveTables{std::move(waveTables)}, _sampleRate{sampleRate}
 {
     _ADSRParams.attack = 0.1f;
     _ADSRParams.decay = 0.f;
@@ -26,11 +26,13 @@ float WavetableOscillator::getSample()
     if(_ADSRManager.isIdle() == true)
     {
         this->stop();
+        releaseComplete = true;
         return 0.f;
     }
+    releaseComplete = false;
     const float sample = interpolateLinearly();
     index += indexIncrement;
-    index = std::fmod(index, static_cast<float>(waveTable.size()));
+    index = std::fmod(index, static_cast<float>(waveTables[_waveIndex].size()));
     
     return sample;
 }
@@ -46,11 +48,15 @@ void WavetableOscillator::setADSR(const Stefan::ADSR::Parameters& ADSRParameters
     _ADSRManager.setParameters(_ADSRParams);
 }
 
+void WavetableOscillator::setWaveIndex(const int& waveIndex)
+{
+    _waveIndex = waveIndex;
+}
 
 void WavetableOscillator::setFrequency(float& frequency)
 {
     _ADSRManager.noteOn();
-    indexIncrement = frequency * static_cast<float>(waveTable.size()) / static_cast<float>(_sampleRate);
+    indexIncrement = frequency * static_cast<float>(waveTables[_waveIndex].size()) / static_cast<float>(_sampleRate);
 }
 
 void WavetableOscillator::noteOff()
@@ -72,14 +78,14 @@ bool WavetableOscillator::isPlaying() const
 float WavetableOscillator::interpolateLinearly() const
 {
     // is the largest index not larger than the index
-    const auto truncatedIndex = static_cast<typename  decltype(waveTable)::size_type>(index);
+    const auto truncatedIndex = static_cast<typename  decltype(waveTables)::size_type>(index);
     // nextIndex is the smallest integer index larger than index or 0 if trancutatedIndex is equal to waveTable.size() -1
-    const auto nextIndex = static_cast<typename  decltype(waveTable)::size_type>(std::ceil(index)) % waveTable.size();
+    const auto nextIndex = static_cast<typename  decltype(waveTables)::size_type>(std::ceil(index)) % waveTables[_waveIndex].size();
     // nextIndexWeight is the weight we put on waveTable[nextIndex] in the returned sum.
     const auto nextIndexWeight = index - static_cast<float>(truncatedIndex);
     /*
      In linear interpolation, we want to return a * waveTable[truncatedIndex] + b * waveTable[nextIndex], where a + b == 1. Additionally, we fix the ratio b / a to be equal to the ratio (index - truncatedIndex) / (nextIndex - index) (apart from the edge case where nextIndex is 0).
      */
-    return waveTable[nextIndex] * nextIndexWeight + (1.f - nextIndexWeight) * waveTable[truncatedIndex];
+    return waveTables[_waveIndex][nextIndex] * nextIndexWeight + (1.f - nextIndexWeight) * waveTables[_waveIndex][truncatedIndex];
 }
 
