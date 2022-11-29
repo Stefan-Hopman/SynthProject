@@ -6,6 +6,18 @@
   <MAINGROUP id="SLNJB6" name="ProjectFourSynth">
     <GROUP id="{F3CA01D3-D3AE-5788-F303-E2FEFCCEC603}" name="Source">
       <GROUP id="{394139B3-EDFD-5338-E4F8-D25987BFB432}" name="Stefan_Fx">
+        <GROUP id="{BB7B13F5-25D9-4A87-043E-A9CE5E82DB22}" name="Modulation">
+          <FILE id="Qdfvna" name="CircularBuffer.h" compile="0" resource="0"
+                file="Source/CircularBuffer.h"/>
+          <FILE id="MnJbNX" name="CircularBufferDelay.cpp" compile="1" resource="0"
+                file="Source/CircularBufferDelay.cpp"/>
+          <FILE id="jatbK3" name="CircularBufferDelay.h" compile="0" resource="0"
+                file="Source/CircularBufferDelay.h"/>
+          <FILE id="x0mU4v" name="LFO.cpp" compile="1" resource="0" file="Source/LFO.cpp"/>
+          <FILE id="NdsMu1" name="LFO.h" compile="0" resource="0" file="Source/LFO.h"/>
+          <FILE id="vnQhEK" name="Modulation.cpp" compile="1" resource="0" file="Source/Modulation.cpp"/>
+          <FILE id="U5zag7" name="Modulation.h" compile="0" resource="0" file="Source/Modulation.h"/>
+        </GROUP>
         <FILE id="QEvNJF" name="Gain.cpp" compile="1" resource="0" file="Source/Gain.cpp"/>
         <FILE id="hrTFDn" name="Gain.h" compile="0" resource="0" file="Source/Gain.h"/>
       </GROUP>

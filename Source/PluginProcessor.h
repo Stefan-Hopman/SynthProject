@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "AdditiveWavetableSynth.h"
+#include "Modulation.h"
 //==============================================================================
 /**
 */
@@ -60,7 +61,7 @@ public:
 private:
     //==============================================================================
     void updateParameters();
-    AdditiveWavetableSynth additiveWaveTableSynth = AdditiveWavetableSynth(4);
-    WavetableSynth synth;
+    AdditiveWavetableSynth additiveWaveTableSynth = AdditiveWavetableSynth(4); // 4 synths in the additive 
+    Modulation modulationFx; // effect for different modulations (vibrato, chorus, flanger)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessor)
 };

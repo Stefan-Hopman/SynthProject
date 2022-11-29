@@ -73,5 +73,23 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> decayTimeAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> sustainLevelTimeAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> releaseTimeAttachment;
+    
+    // Modulation
+    juce::Label modulationLabel;
+    juce::ComboBox modTypeBox;
+    juce::Label modTypeLabel;
+    juce::Slider lfoRateSlider;
+    juce::Label lfoRateLabel;
+    juce::Slider intensitySlider;
+    juce::Label intensityLabel;
+    juce::Slider feedbackSlider;
+    juce::Label feedbackLabel;
+    
+    // Modulation Attachments
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> modTypeBoxAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> lfoRateAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> feedbackAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> intesityAttachment;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessorEditor)
 };

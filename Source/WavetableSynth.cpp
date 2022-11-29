@@ -247,7 +247,7 @@ void WavetableSynth::render(juce::AudioBuffer<float>& buffer, const int& beginSa
         for (int channel = 1; channel < buffer.getNumChannels(); ++channel)
         {
             auto* channelData = buffer.getWritePointer(channel);
-            std::copy(firstChannel + beginSample, firstChannel + endSample, channelData + beginSample);
+            std::copy(firstChannel + beginSample, firstChannel + (buffer.getNumSamples()-1), channelData + beginSample);
         }
         
     

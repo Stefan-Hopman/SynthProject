@@ -108,6 +108,44 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     sustainLevelLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(sustainLevelSlider);
     
+    // Modulation
+    modulationLabel.setText("Modulation", juce::dontSendNotification);
+    modulationLabel.setFont(18.f);
+    modulationLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(modulationLabel);
+    modTypeBox.addItem("None", 1);
+    modTypeBox.addItem("Flanger", 2);
+    modTypeBox.addItem("Chorus", 3);
+    modTypeBox.addItem("Vibrato", 4);
+    modTypeBox.setJustificationType(juce::Justification::centred);
+    modTypeLabel.attachToComponent(&modTypeBox, false);
+    modTypeLabel.setText("Modulation Type", juce::dontSendNotification);
+    modTypeLabel.setFont(16.f);
+    modTypeLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(modTypeBox);
+    lfoRateSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    lfoRateSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    lfoRateLabel.attachToComponent(&lfoRateSlider, false);
+    lfoRateLabel.setText("LFO Rate", juce::dontSendNotification);
+    lfoRateLabel.setFont(14.f);
+    lfoRateLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(lfoRateSlider);
+    feedbackSlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    feedbackSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    feedbackLabel.attachToComponent(&feedbackSlider, false);
+    feedbackLabel.setText("Feedback", juce::dontSendNotification);
+    feedbackLabel.setFont(14.f);
+    feedbackLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(feedbackSlider);
+    intensitySlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    intensitySlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    intensityLabel.attachToComponent(&intensitySlider, false);
+    intensityLabel.setText("Intensity", juce::dontSendNotification);
+    intensityLabel.setFont(14.f);
+    intensityLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(intensitySlider);
+    
+    
     // Set Colors
     getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::purple);
     getLookAndFeel().setColour(juce::Slider::trackColourId, juce::Colours::magenta);
@@ -117,6 +155,8 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     getLookAndFeel().setColour(juce::ComboBox::outlineColourId , juce::Colours::grey);
     getLookAndFeel().setColour(juce::Slider::rotarySliderOutlineColourId, juce::Colours::grey);
     getLookAndFeel().setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::magenta);
+    
+    
     
     // Attachments
     oscillatorOneGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator One Gain", oscillatorGains[0]);
@@ -139,6 +179,10 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     decayTimeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Decay Time", decayTimeSlider);
     sustainLevelTimeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Sustain Level", sustainLevelSlider);
     releaseTimeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Release Time", releaseTimeSlider);
+    modTypeBoxAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Modulation Type", modTypeBox);
+    lfoRateAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "LFO Rate", lfoRateSlider);
+    feedbackAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Feedback", feedbackSlider);
+    intesityAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Intensity", intensitySlider);
     
     
 }
@@ -175,13 +219,21 @@ void ProjectFourSynthAudioProcessorEditor::resized()
         oscillatorGains[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + x, 32*y, oscillatorSection - 2*x, 6*y);
         oscillatorPitchShiftSliders[i].setBounds(oscillatorsStartPoint + oscillatorSection*i, 43*y, oscillatorSection, 15 *y);
     }
-    auto adsrStartPoint = 0 * x;
     
+    auto adsrStartPoint = 0 * x;
     auto adsrSection = 20 * x;
+    // ADSR Components
     adsrTitle.setBounds(adsrStartPoint + 2 * x, 60 * y, adsrSection - 4 * x, 4.5*y);
     attackTimeSlider.setBounds(adsrStartPoint + 2 * x, 67.5 * y, adsrSection - 4 * x, 4.5*y);
     decayTimeSlider.setBounds(adsrStartPoint + 2 * x, 76.0 * y, adsrSection - 4 * x, 4.5*y);
     releaseTimeSlider.setBounds(adsrStartPoint + 2 * x, 84.5 * y, adsrSection - 4 * x, 4.5*y);
     sustainLevelSlider.setBounds(adsrStartPoint + 2 * x, 93 * y, adsrSection - 4 * x, 4.5*y);
-    
+    // Modulation Components
+    auto modulationStartPoint = 20 * x;
+    auto modulationSection = 20 * x;
+  
+    modTypeBox.setBounds(modulationStartPoint + 2 * x, 64 * y, modulationSection - 4 * x, 4*y);
+    lfoRateSlider.setBounds(modulationStartPoint + 2 * x, 72.5 * y, modulationSection - 4 * x, 6*y);
+    feedbackSlider.setBounds(modulationStartPoint, 83.0 * y, modulationSection/2, 16.0*y);
+    intensitySlider.setBounds(modulationStartPoint +  modulationSection/2, 83.0 * y, modulationSection/2, 16.0*y);
 }

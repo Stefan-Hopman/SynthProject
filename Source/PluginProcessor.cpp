@@ -92,7 +92,7 @@ void ProjectFourSynthAudioProcessor::changeProgramName (int index, const juce::S
 
 void ProjectFourSynthAudioProcessor::updateParameters()
 {
-
+    
     AdditiveWavetableSynth_Parameters waveTableSynthParams = additiveWaveTableSynth.getParameters();
     waveTableSynthParams.gains[0] = powf(10.f, apvts.getRawParameterValue("Oscillator One Gain")->load() / 20.f);
     waveTableSynthParams.gains[1] = powf(10.f, apvts.getRawParameterValue("Oscillator Two Gain")->load() /20.f);
@@ -122,12 +122,19 @@ void ProjectFourSynthAudioProcessor::updateParameters()
     float oscillatorFourPitchShift = apvts.getRawParameterValue("Oscillator Four Pitch Shift")->load();
     
     additiveWaveTableSynth.setParameters(waveTableSynthParams);
+    ModulationParameters modulationParameters = modulationFx.getParameters();
+    modulationParameters.algorithm = static_cast<modulationAlgorithm>(apvts.getRawParameterValue("Modulation Type")->load());
+    modulationParameters.feedback_Pct = apvts.getRawParameterValue("Feedback")->load();
+    modulationParameters.lfoRate_Hz = apvts.getRawParameterValue("LFO Rate")->load();
+    modulationParameters.lfoDepth_Pct = apvts.getRawParameterValue("Intensity")->load();
     
+    modulationFx.setParameters(modulationParameters);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcessor::createParameterLayout()
 {
     auto attributes = juce::AudioParameterChoiceAttributes().withLabel ("selected");
+    auto attributesTwo = juce::AudioParameterChoiceAttributes().withLabel ("selected");
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator One Gain", "Oscillator One Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Gain", "Oscillator Two Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
@@ -149,7 +156,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterFloat>("Decay Time", "Decay Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Sustain Level", "Sustain Level", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 1.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Release Time", "Release Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
-
+    layout.add(std::make_unique<juce::AudioParameterFloat>("LFO Rate", "LFO Rate", juce::NormalisableRange<float>(0.1f, 20.f, 0.1f, 1.f), 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Intensity", "Intensity", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Feedback", "Feedback", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Modulation Type", "Modulation Type", juce::StringArray {"None", "Chorus", "Flanger", "Vibrato"}, 0, attributesTwo));
     return layout;
    
 }
@@ -159,7 +169,9 @@ void ProjectFourSynthAudioProcessor::prepareToPlay (double sampleRate, int sampl
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    
     additiveWaveTableSynth.prepareToPlay(sampleRate);
+    modulationFx.reset(sampleRate);
 }
 
 void ProjectFourSynthAudioProcessor::releaseResources()
@@ -222,6 +234,17 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
         // ..do something to the data...
     }
     additiveWaveTableSynth.processBlock(buffer, midiMessages);
+    // Apply Modulation effect
+    for (int i = 0; i < buffer.getNumSamples(); i++)
+    {
+        buffer.setSample(0, i, modulationFx.processAudioSample(buffer.getSample(0, i)));
+    }
+    auto* firstChannel = buffer.getWritePointer(0);
+    for (int channel = 1; channel < buffer.getNumChannels(); ++channel)
+    {
+        auto* channelData = buffer.getWritePointer(channel);
+        std::copy(firstChannel, firstChannel + buffer.getNumSamples(), channelData);
+    }
 }
 
 //==============================================================================
