@@ -31,8 +31,6 @@ public:
     void setWaveIndex(const int& waveIndex);
     void noteOff();
     void stop();
-    
-    
     bool isPlaying() const;
 private:
     Stefan::ADSR _ADSRManager;
@@ -44,7 +42,5 @@ private:
     float index = 0.f;
     float indexIncrement = 0.f;
     int _waveIndex = 0;
-    
-    
 };
 

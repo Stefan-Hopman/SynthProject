@@ -50,9 +50,6 @@ class WavetableSynth
 public:
     WavetableSynth() = default;
     WavetableSynth(const WavetableSynth&) = default;
-    
-   
-    
     WavetableSynth(WavetableSynth&&) = default;
     
     // sets the sample rate for processing (analogously to prepareToPlay() from PluginProcessor).
@@ -98,9 +95,6 @@ private:
     void updateOscillators(WaveType wave);
     // updatate all 128 on a new envelope
     void updateOscillatorEnvelopes();
-    
-    
-    
-    
+ 
 };
 

@@ -73,6 +73,41 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
         oscillatorActives[i].setButtonText("Active");
         addAndMakeVisible(oscillatorActives[i]);
     }
+    
+    // ADSR
+    adsrTitle.setText("ADSR", juce::dontSendNotification);
+    adsrTitle.setFont(18.f);
+    adsrTitle.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(adsrTitle);
+    attackTimeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    attackTimeSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    attackTimeLabel.attachToComponent(&attackTimeSlider, false);
+    attackTimeLabel.setText("Attack Time", juce::dontSendNotification);
+    attackTimeLabel.setFont(14.f);
+    attackTimeLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(attackTimeSlider);
+    decayTimeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    decayTimeSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    decayTimeLabel.attachToComponent(&decayTimeSlider, false);
+    decayTimeLabel.setText("Decay Time", juce::dontSendNotification);
+    decayTimeLabel.setFont(14.f);
+    decayTimeLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(decayTimeSlider);
+    releaseTimeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    releaseTimeSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    releaseTimeLabel.attachToComponent(&releaseTimeSlider, false);
+    releaseTimeLabel.setText("Release Time", juce::dontSendNotification);
+    releaseTimeLabel.setFont(14.f);
+    releaseTimeLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(releaseTimeSlider);
+    sustainLevelSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    sustainLevelSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    sustainLevelLabel.attachToComponent(&sustainLevelSlider, false);
+    sustainLevelLabel.setText("Sustain Level", juce::dontSendNotification);
+    sustainLevelLabel.setFont(14.f);
+    sustainLevelLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(sustainLevelSlider);
+    
     // Set Colors
     getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::purple);
     getLookAndFeel().setColour(juce::Slider::trackColourId, juce::Colours::magenta);
@@ -100,6 +135,11 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     waveChoiceTwoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Wave Type Oscillator Two", waveChoices[1]);
     waveChoiceThreeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Wave Type Oscillator Three", waveChoices[2]);
     waveChoiceFourAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Wave Type Oscillator Four", waveChoices[3]);
+    attackTimeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Attack Time", attackTimeSlider);
+    decayTimeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Decay Time", decayTimeSlider);
+    sustainLevelTimeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Sustain Level", sustainLevelSlider);
+    releaseTimeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Release Time", releaseTimeSlider);
+    
     
 }
 
@@ -135,5 +175,13 @@ void ProjectFourSynthAudioProcessorEditor::resized()
         oscillatorGains[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + x, 32*y, oscillatorSection - 2*x, 6*y);
         oscillatorPitchShiftSliders[i].setBounds(oscillatorsStartPoint + oscillatorSection*i, 43*y, oscillatorSection, 15 *y);
     }
+    auto adsrStartPoint = 0 * x;
+    
+    auto adsrSection = 20 * x;
+    adsrTitle.setBounds(adsrStartPoint + 2 * x, 60 * y, adsrSection - 4 * x, 4.5*y);
+    attackTimeSlider.setBounds(adsrStartPoint + 2 * x, 67.5 * y, adsrSection - 4 * x, 4.5*y);
+    decayTimeSlider.setBounds(adsrStartPoint + 2 * x, 76.0 * y, adsrSection - 4 * x, 4.5*y);
+    releaseTimeSlider.setBounds(adsrStartPoint + 2 * x, 84.5 * y, adsrSection - 4 * x, 4.5*y);
+    sustainLevelSlider.setBounds(adsrStartPoint + 2 * x, 93 * y, adsrSection - 4 * x, 4.5*y);
     
 }

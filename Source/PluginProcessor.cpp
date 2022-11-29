@@ -109,6 +109,13 @@ void ProjectFourSynthAudioProcessor::updateParameters()
     waveTableSynthParams.waveTypes[2] = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Three")->load());
     waveTableSynthParams.waveTypes[3] = static_cast<WaveType>(apvts.getRawParameterValue("Wave Type Oscillator Four")->load());
     
+    waveTableSynthParams.attackTime = apvts.getRawParameterValue("Attack Time")->load();
+    waveTableSynthParams.decayTime = apvts.getRawParameterValue("Decay Time")->load();
+    waveTableSynthParams.sustainLevel = apvts.getRawParameterValue("Sustain Level")->load();
+    waveTableSynthParams.releaseTime = apvts.getRawParameterValue("Release Time")->load();
+    
+    
+    
     float oscillatorOnePitchShift = apvts.getRawParameterValue("Oscillator One Pitch Shift")->load();
     float oscillatorTwoPitchShift = apvts.getRawParameterValue("Oscillator Two Pitch Shift")->load();
     float oscillatorThreePitchShift = apvts.getRawParameterValue("Oscillator Three Pitch Shift")->load();
@@ -138,6 +145,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Two", "Wave Type Oscillator Two", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
     layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Three", "Wave Type Oscillator Three", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
     layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Four", "Wave Type Oscillator Four", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Attack Time", "Attack", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Decay Time", "Decay Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Sustain Level", "Sustain Level", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Release Time", "Release Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
 
     return layout;
    

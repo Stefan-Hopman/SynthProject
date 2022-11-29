@@ -39,9 +39,18 @@ private:
     juce::Label oscillatorPitchShiftLabels[4];
     juce::ToggleButton oscillatorActives[4];
     
+    // ADSR Labels
+    juce::Label adsrTitle;
+    juce::Slider attackTimeSlider;
+    juce::Label attackTimeLabel;
+    juce::Slider decayTimeSlider;
+    juce::Label decayTimeLabel;
+    juce::Slider releaseTimeSlider;
+    juce::Label releaseTimeLabel;
+    juce::Slider sustainLevelSlider;
+    juce::Label sustainLevelLabel;
     
-    
-    // Attachments
+    // Attachments for oscillators
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorOneGainAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorTwoGainAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> oscillatorThreeGainAttachment;
@@ -59,5 +68,10 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> waveChoiceThreeAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> waveChoiceFourAttachment;
     
+    // Attachments for ADSR
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attackTimeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> decayTimeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> sustainLevelTimeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> releaseTimeAttachment;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessorEditor)
 };
