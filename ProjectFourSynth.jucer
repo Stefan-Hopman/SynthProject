@@ -5,7 +5,21 @@
               pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn">
   <MAINGROUP id="SLNJB6" name="ProjectFourSynth">
     <GROUP id="{F3CA01D3-D3AE-5788-F303-E2FEFCCEC603}" name="Source">
+      <GROUP id="{B8E9A212-E664-7120-A918-D71FA4673933}" name="Service">
+        <FILE id="XnI4CG" name="PresetManager.cpp" compile="1" resource="0"
+              file="Source/PresetManager.cpp"/>
+        <FILE id="eEIh8E" name="PresetManager.h" compile="0" resource="0" file="Source/PresetManager.h"/>
+      </GROUP>
+      <GROUP id="{527EA980-7A75-5311-3EE5-CBB27633B4D9}" name="GUI">
+        <FILE id="F3fiHJ" name="PresetPannel.h" compile="0" resource="0" file="Source/PresetPannel.h"/>
+        <FILE id="YjQnZz" name="XyPad.cpp" compile="1" resource="0" file="Source/XyPad.cpp"/>
+        <FILE id="pEgbfZ" name="XyPad.h" compile="0" resource="0" file="Source/XyPad.h"/>
+      </GROUP>
       <GROUP id="{394139B3-EDFD-5338-E4F8-D25987BFB432}" name="Stefan_Fx">
+        <GROUP id="{A1040E2E-44A2-0232-2376-D681A08CCF2A}" name="Distorsion">
+          <FILE id="h0MCAH" name="Distorsion.cpp" compile="1" resource="0" file="Source/Distorsion.cpp"/>
+          <FILE id="grc2Yh" name="Distorsion.h" compile="0" resource="0" file="Source/Distorsion.h"/>
+        </GROUP>
         <GROUP id="{BB7B13F5-25D9-4A87-043E-A9CE5E82DB22}" name="Modulation">
           <FILE id="Qdfvna" name="CircularBuffer.h" compile="0" resource="0"
                 file="Source/CircularBuffer.h"/>
@@ -66,6 +80,7 @@
         <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -79,6 +94,7 @@
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

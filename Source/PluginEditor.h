@@ -10,7 +10,8 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-
+#include "XyPad.h"
+#include "PresetPannel.h"
 //==============================================================================
 /**
 */
@@ -84,6 +85,13 @@ private:
     juce::Label intensityLabel;
     juce::Slider feedbackSlider;
     juce::Label feedbackLabel;
+    
+    // XY Pad
+    GUI::XyPad xyPad;
+    
+    // Preset
+    GUI::PresetPanel presetPanel;
+    
     
     // Modulation Attachments
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> modTypeBoxAttachment;

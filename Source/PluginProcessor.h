@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "AdditiveWavetableSynth.h"
 #include "Modulation.h"
+#include "PresetManager.h"
 //==============================================================================
 /**
 */
@@ -58,10 +59,13 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
+    Service::PresetManager& getPresetManager() {return *presetManager; }
 private:
     //==============================================================================
     void updateParameters();
     AdditiveWavetableSynth additiveWaveTableSynth = AdditiveWavetableSynth(4); // 4 synths in the additive 
     Modulation modulationFx; // effect for different modulations (vibrato, chorus, flanger)
+    // Audio plugin parameters
+    std::unique_ptr<Service::PresetManager> presetManager;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessor)
 };

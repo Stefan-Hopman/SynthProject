@@ -19,10 +19,16 @@ ProjectFourSynthAudioProcessor::ProjectFourSynthAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
 #endif
-{
-}
+    apvts(*this, nullptr, ProjectInfo::projectName, createParameterLayout())
+    {
+        apvts.state.setProperty(Service::PresetManager::presetNameProperty, "", nullptr);
+        apvts.state.setProperty("version", ProjectInfo::versionString, nullptr);
+        presetManager = std::make_unique<Service::PresetManager>(apvts);
+
+    }
+
 
 ProjectFourSynthAudioProcessor::~ProjectFourSynthAudioProcessor()
 {

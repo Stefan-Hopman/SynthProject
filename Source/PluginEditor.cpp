@@ -11,12 +11,12 @@
 
 //==============================================================================
 ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (ProjectFourSynthAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p), presetPanel(p.getPresetManager())
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     // Setting the label of the app
-    setSize (1200, 700);
+    setSize(1200, 700);
     appTitle.setText("Project 4 Synth", juce::dontSendNotification);
     appTitle.setFont(44.f);
     appTitle.setJustificationType(juce::Justification::centredTop);
@@ -51,6 +51,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
         oscillatorGains[i].setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
         oscillatorGainLabels[i].attachToComponent(&oscillatorGains[i], false);
         oscillatorGainLabels[i].setText("Volume", juce::dontSendNotification);
+        oscillatorGains[i].setTextValueSuffix(" dB");
         oscillatorGainLabels[i].setFont(14.f);
         oscillatorGainLabels[i].setJustificationType(juce::Justification::centred);
         addAndMakeVisible(oscillatorGains[i]);
@@ -60,6 +61,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     {
         oscillatorPitchShiftSliders[i].setSliderStyle(juce::Slider::RotaryVerticalDrag);
         oscillatorPitchShiftSliders[i].setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+        oscillatorPitchShiftSliders[i].setTextValueSuffix(" s");
         oscillatorPitchShiftLabels[i].attachToComponent(&oscillatorPitchShiftSliders[i], false);
         oscillatorPitchShiftLabels[i].setText("Pitch Shift", juce::dontSendNotification);
         oscillatorPitchShiftLabels[i].setFont(14.f);
@@ -85,9 +87,11 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     attackTimeLabel.setText("Attack Time", juce::dontSendNotification);
     attackTimeLabel.setFont(14.f);
     attackTimeLabel.setJustificationType(juce::Justification::centred);
+    attackTimeSlider.setTextValueSuffix(" sec");
     addAndMakeVisible(attackTimeSlider);
     decayTimeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
     decayTimeSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    decayTimeSlider.setTextValueSuffix(" sec");
     decayTimeLabel.attachToComponent(&decayTimeSlider, false);
     decayTimeLabel.setText("Decay Time", juce::dontSendNotification);
     decayTimeLabel.setFont(14.f);
@@ -99,6 +103,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     releaseTimeLabel.setText("Release Time", juce::dontSendNotification);
     releaseTimeLabel.setFont(14.f);
     releaseTimeLabel.setJustificationType(juce::Justification::centred);
+    releaseTimeSlider.setTextValueSuffix(" sec");
     addAndMakeVisible(releaseTimeSlider);
     sustainLevelSlider.setSliderStyle(juce::Slider::LinearHorizontal);
     sustainLevelSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
@@ -125,6 +130,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     addAndMakeVisible(modTypeBox);
     lfoRateSlider.setSliderStyle(juce::Slider::LinearHorizontal);
     lfoRateSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    lfoRateSlider.setTextValueSuffix(" Hz");
     lfoRateLabel.attachToComponent(&lfoRateSlider, false);
     lfoRateLabel.setText("LFO Rate", juce::dontSendNotification);
     lfoRateLabel.setFont(14.f);
@@ -132,6 +138,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     addAndMakeVisible(lfoRateSlider);
     feedbackSlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     feedbackSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    feedbackSlider.setTextValueSuffix(" %");
     feedbackLabel.attachToComponent(&feedbackSlider, false);
     feedbackLabel.setText("Feedback", juce::dontSendNotification);
     feedbackLabel.setFont(14.f);
@@ -139,6 +146,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     addAndMakeVisible(feedbackSlider);
     intensitySlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     intensitySlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    intensitySlider.setTextValueSuffix(" %");
     intensityLabel.attachToComponent(&intensitySlider, false);
     intensityLabel.setText("Intensity", juce::dontSendNotification);
     intensityLabel.setFont(14.f);
@@ -184,7 +192,8 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     feedbackAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Feedback", feedbackSlider);
     intesityAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Intensity", intensitySlider);
     
-    
+    addAndMakeVisible(xyPad);
+    addAndMakeVisible(presetPanel);
 }
 
 ProjectFourSynthAudioProcessorEditor::~ProjectFourSynthAudioProcessorEditor()
@@ -207,7 +216,7 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto x = getWidth()/100;
     auto y = getHeight()/100;
-    appTitle.setBounds(35*x, 5*y, 30*x, 10*y);
+    appTitle.setBounds(35*x, 6*y, 30*x, 10*y);
     auto oscillatorsStartPoint = 10 * x;
     auto oscillatorsEndPoint = 90 * x;
     auto oscillatorSection = (oscillatorsEndPoint - oscillatorsStartPoint) / 4;
@@ -236,4 +245,10 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     lfoRateSlider.setBounds(modulationStartPoint + 2 * x, 72.5 * y, modulationSection - 4 * x, 6*y);
     feedbackSlider.setBounds(modulationStartPoint, 83.0 * y, modulationSection/2, 16.0*y);
     intensitySlider.setBounds(modulationStartPoint +  modulationSection/2, 83.0 * y, modulationSection/2, 16.0*y);
+    
+    // XY Pad
+    auto xyPadStartPoint = 80 * x;
+    auto xyPadSection = 18 * x;
+    xyPad.setBounds(xyPadStartPoint, 62 * y, xyPadSection, 36*y);
+    presetPanel.setBounds(getLocalBounds().removeFromTop(proportionOfHeight(0.06f)));
 }
