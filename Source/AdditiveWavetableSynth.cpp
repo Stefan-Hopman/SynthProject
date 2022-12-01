@@ -26,6 +26,7 @@ AdditiveWavetableSynth::AdditiveWavetableSynth(const int synthCount)
         _params.gains.emplace_back(1.f);
         _params.activeStates.emplace_back(false);
         _params.waveTypes.emplace_back(WaveType::Sine);
+        _params.pitchShift.emplace_back(0.f);
     }
     for(int i = 0; i < synthCount; i++)
     {
@@ -37,6 +38,7 @@ AdditiveWavetableSynth::AdditiveWavetableSynth(const int synthCount)
         synthParameters.active = _params.activeStates[i];
         synthParameters.waveType = _params.waveTypes[i];
         synthParameters.gain = _params.gains[i];
+        synthParameters.pitchShift = _params.pitchShift[i];
         _synths[i].setParameters(synthParameters);
     }
 }
@@ -82,6 +84,7 @@ void AdditiveWavetableSynth::handleMidiEvent(const juce::MidiMessage& midiEvent)
 // updates the parameters of the synth
 void AdditiveWavetableSynth::setParameters(const AdditiveWavetableSynth_Parameters& params)
 {
+    _params = params;
     for (int i = 0; i < _synthCount; i++)
     {
         WavetableSynth_Parameters wavetableParams = _synths[i].getParameters();
@@ -92,6 +95,7 @@ void AdditiveWavetableSynth::setParameters(const AdditiveWavetableSynth_Paramete
         wavetableParams.decayTime = params.decayTime;
         wavetableParams.sustainLevel = params.sustainLevel;
         wavetableParams.waveType = params.waveTypes[i];
+        wavetableParams.pitchShift = params.pitchShift[i];
         _synths[i].setParameters(wavetableParams);
     }
     

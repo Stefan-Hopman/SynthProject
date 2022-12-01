@@ -29,6 +29,7 @@ struct AdditiveWavetableSynth_Parameters
         sustainLevel = params.sustainLevel;
         gains = params.gains;
         activeStates = params.activeStates;
+        pitchShift = params.pitchShift;
         return *this;
     }
     
@@ -39,6 +40,7 @@ struct AdditiveWavetableSynth_Parameters
     std::vector<float> gains;
     std::vector<bool> activeStates;
     std::vector<WaveType> waveTypes;
+    std::vector<float> pitchShift;
 };
 
 
@@ -66,7 +68,7 @@ public:
     }
 private:
     AdditiveWavetableSynth_Parameters _params;
-    int _synthCount = 0;;
+    int _synthCount = 0;
     double _sampleRate;
     std::vector<WavetableSynth> _synths;
 };

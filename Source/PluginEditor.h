@@ -99,5 +99,10 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> feedbackAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> intesityAttachment;
     
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchShiftOneAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchShiftTwoAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchShiftThreeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchShiftFourAttachment;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessorEditor)
 };

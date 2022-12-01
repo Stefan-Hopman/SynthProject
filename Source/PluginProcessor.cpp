@@ -120,12 +120,10 @@ void ProjectFourSynthAudioProcessor::updateParameters()
     waveTableSynthParams.sustainLevel = apvts.getRawParameterValue("Sustain Level")->load();
     waveTableSynthParams.releaseTime = apvts.getRawParameterValue("Release Time")->load();
     
-    
-    
-    float oscillatorOnePitchShift = apvts.getRawParameterValue("Oscillator One Pitch Shift")->load();
-    float oscillatorTwoPitchShift = apvts.getRawParameterValue("Oscillator Two Pitch Shift")->load();
-    float oscillatorThreePitchShift = apvts.getRawParameterValue("Oscillator Three Pitch Shift")->load();
-    float oscillatorFourPitchShift = apvts.getRawParameterValue("Oscillator Four Pitch Shift")->load();
+    waveTableSynthParams.pitchShift[0] = apvts.getRawParameterValue("Oscillator One Pitch Shift")->load();
+    waveTableSynthParams.pitchShift[1] = apvts.getRawParameterValue("Oscillator Two Pitch Shift")->load();
+    waveTableSynthParams.pitchShift[2] = apvts.getRawParameterValue("Oscillator Three Pitch Shift")->load();
+    waveTableSynthParams.pitchShift[3] = apvts.getRawParameterValue("Oscillator Four Pitch Shift")->load();
     
     additiveWaveTableSynth.setParameters(waveTableSynthParams);
     ModulationParameters modulationParameters = modulationFx.getParameters();
@@ -139,8 +137,7 @@ void ProjectFourSynthAudioProcessor::updateParameters()
 
 juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcessor::createParameterLayout()
 {
-    auto attributes = juce::AudioParameterChoiceAttributes().withLabel ("selected");
-    auto attributesTwo = juce::AudioParameterChoiceAttributes().withLabel ("selected");
+    
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator One Gain", "Oscillator One Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Gain", "Oscillator Two Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
@@ -154,10 +151,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Pitch Shift", "Oscillator Two Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Three Pitch Shift", "Oscillator Three Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Four Pitch Shift", "Oscillator Four Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator One", "Wave Type Oscillator One", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Two", "Wave Type Oscillator Two", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Three", "Wave Type Oscillator Three", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Four", "Wave Type Oscillator Four", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0, attributes));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator One", "Wave Type Oscillator One", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Two", "Wave Type Oscillator Two", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Three", "Wave Type Oscillator Three", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Four", "Wave Type Oscillator Four", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Attack Time", "Attack", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Decay Time", "Decay Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Sustain Level", "Sustain Level", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 1.0f));
@@ -165,7 +162,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterFloat>("LFO Rate", "LFO Rate", juce::NormalisableRange<float>(0.1f, 20.f, 0.1f, 1.f), 1.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Intensity", "Intensity", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Feedback", "Feedback", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Modulation Type", "Modulation Type", juce::StringArray {"None", "Chorus", "Flanger", "Vibrato"}, 0, attributesTwo));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Modulation Type", "Modulation Type", juce::StringArray {"None", "Chorus", "Flanger", "Vibrato"}, 0));
+    
+    
     return layout;
    
 }

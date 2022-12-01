@@ -175,10 +175,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     oscillatorTwoActiveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, "Oscillator Two On", oscillatorActives[1]);
     oscillatorThreeActiveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, "Oscillator Three On", oscillatorActives[2]);
     oscillatorFourActiveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, "Oscillator Four On", oscillatorActives[3]);
-    oscillatorOnePitchShiftAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator One Pitch Shift", oscillatorPitchShiftSliders[0]);
-    oscillatorTwoPitchShiftAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator Two Pitch Shift", oscillatorPitchShiftSliders[1]);
-    oscillatorThreePitchShiftAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator Three Pitch Shift", oscillatorPitchShiftSliders[2]);
-    oscillatorFourPitchShiftAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator Four Pitch Shift", oscillatorPitchShiftSliders[3]);
+   
     waveChoiceOneAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Wave Type Oscillator One", waveChoices[0]);
     waveChoiceTwoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Wave Type Oscillator Two", waveChoices[1]);
     waveChoiceThreeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Wave Type Oscillator Three", waveChoices[2]);
@@ -191,9 +188,15 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     lfoRateAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "LFO Rate", lfoRateSlider);
     feedbackAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Feedback", feedbackSlider);
     intesityAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Intensity", intensitySlider);
+    pitchShiftOneAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator One Pitch Shift", oscillatorPitchShiftSliders[0]);
+    pitchShiftTwoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator Two Pitch Shift", oscillatorPitchShiftSliders[1]);
+    pitchShiftThreeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator Three Pitch Shift", oscillatorPitchShiftSliders[2]);
+    pitchShiftFourAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator Four Pitch Shift", oscillatorPitchShiftSliders[3]);
+    
     
     addAndMakeVisible(xyPad);
     addAndMakeVisible(presetPanel);
+    
 }
 
 ProjectFourSynthAudioProcessorEditor::~ProjectFourSynthAudioProcessorEditor()

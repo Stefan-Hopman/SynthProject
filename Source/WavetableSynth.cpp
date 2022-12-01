@@ -167,6 +167,19 @@ void WavetableSynth::processBlock(juce::AudioBuffer<float>& buffer,
     render(buffer, currentSample, buffer.getNumSamples());
 }
 
+float WavetableSynth::halfStepToFreqMultiplier(const int& halfSteps)
+{
+    if (halfSteps > 0.f)
+    {
+        return 1.f + (1.f / 12.f) * halfSteps;
+    }
+    else
+    {
+        return 1.0f + (0.04166666667f * halfSteps);
+    }
+    
+}
+
 void WavetableSynth::handleMidiEvent(const juce::MidiMessage& midiMessage)
 {
     // If a key was pressed (“note on”), we convert its number to frequency in Hz and inform the oscillator under that number that it should start playing by setting its frequency.
@@ -175,18 +188,23 @@ void WavetableSynth::handleMidiEvent(const juce::MidiMessage& midiMessage)
     {
     
         const auto oscillatorId = midiMessage.getNoteNumber();
-        float frequency = midiNoteNumberToFrequency(oscillatorId);
-        _oscillators[oscillatorId].setFrequency(frequency);
+        float freqMultiplier = halfStepToFreqMultiplier(_params.pitchShift);
+        float frequency = freqMultiplier * midiNoteNumberToFrequency(oscillatorId);
+        activeOscillatorIds.push_back(oscillatorId);
+        _oscillators[oscillatorId].setFrequency(frequency, true);
     }
     // If a key was released (“note off”), we stop the oscillator responsible for that key.
     else if (midiMessage.isNoteOff())
     {
         const auto oscillatorId = midiMessage.getNoteNumber();
+        // xSliders.erase(std::remove(xSliders.begin(), xSliders.end(), slider), xSliders.end());
+        activeOscillatorIds.erase(std::remove(activeOscillatorIds.begin(), activeOscillatorIds.end(), oscillatorId), activeOscillatorIds.end());
         _oscillators[oscillatorId].noteOff();
     }
     // If an “all notes off” message was issued, we stop all oscillators. Such messages are more likely to be present in MIDI files rather than during live performances
     else if (midiMessage.isAllNotesOff())
     {
+        activeOscillatorIds.clear();
         for (auto& oscillator : _oscillators)
         {
             oscillator.stop();
@@ -208,6 +226,15 @@ void WavetableSynth::setParameters(const WavetableSynth_Parameters& params)
         _params.releaseTime = params.releaseTime;
         _params.sustainLevel = params.sustainLevel;
         updateOscillatorEnvelopes();
+    }
+    if (_params.pitchShift != params.pitchShift)
+    {
+        float freqMultiplier = halfStepToFreqMultiplier(params.pitchShift);
+        for (int i = 0; i < activeOscillatorIds.size() ; i++)
+        {
+            float frequency = freqMultiplier * midiNoteNumberToFrequency(activeOscillatorIds[i]);
+            _oscillators[activeOscillatorIds[i]].setFrequency(frequency, false);
+        }
     }
     _params = params;
     

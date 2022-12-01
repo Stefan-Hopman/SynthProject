@@ -16,6 +16,7 @@ namespace GUI
     // XY Pad Thumb Section
     XyPad::Thumb::Thumb()
     {
+        constrainer.setMinimumOnscreenAmounts(thumbSize, thumbSize, thumbSize, thumbSize);
         
     }
 
@@ -23,7 +24,16 @@ namespace GUI
     {
         g.setColour(juce::Colours::white);
         g.fillEllipse(getLocalBounds().toFloat());
+    }
     
+    void XyPad::Thumb::mouseDown(const juce::MouseEvent& event)
+    {
+        dragger.startDraggingComponent(this, event);
+    }
+    
+    void XyPad::Thumb::mouseDrag(const juce::MouseEvent& event)
+    {
+        dragger.dragComponent(this, event, &constrainer);
     }
 
     // XY Pad Section
@@ -43,6 +53,28 @@ namespace GUI
         g.fillRoundedRectangle(getLocalBounds().toFloat(), 10.f);
     }
 
+    void XyPad::registerSlider(juce::Slider* slider, Axis axis)
+    {
+        const std::lock_guard<std::mutex> lock(vectorMutex);
+        if (axis == Axis::X)
+        {
+            xSliders.push_back(slider);
+        }
+        if (axis == Axis::Y)
+        {
+            ySliders.push_back(slider);
+        }
+    }
+
+    void XyPad::deregisterSlider(juce::Slider* slider)
+    {
+        // Lock
+        const std::lock_guard<std::mutex> lock(vectorMutex);
+        // remove/erease idion
+        xSliders.erase(std::remove(xSliders.begin(), xSliders.end(), slider), xSliders.end());
+        ySliders.erase(std::remove(ySliders.begin(), ySliders.end(), slider), ySliders.end());
+        
+    }
 
 
-}
+};

@@ -33,6 +33,7 @@ struct WavetableSynth_Parameters
         sustainLevel = params.sustainLevel;
         gain = params.gain;
         active = params.active;
+        pitchShift = params.pitchShift;
         return *this;
     }
     WaveType waveType = WaveType::Sine;
@@ -41,6 +42,7 @@ struct WavetableSynth_Parameters
     float releaseTime = 0.01f;
     float sustainLevel = 1.0f;
     float gain = 1.0f;
+    float pitchShift = 0.f;
     bool active = false;
 };
 
@@ -65,6 +67,8 @@ public:
     }
     // generates samples in the [beginSample, endSample) range (Standard Template Library-style range).
     void render(juce::AudioBuffer<float>& buffer, const int& beginSample, const int& endSample);
+    // Multiplier to allow for pitch shifting
+    float halfStepToFreqMultiplier(const int& halfSteps);
     // translates a MIDI message to the synthesizer’s parameters change.
     void handleMidiEvent(const juce::MidiMessage& midiEvent);
     
@@ -73,6 +77,7 @@ private:
     WavetableSynth_Parameters _params;
     // - variables
     double _sampleRate;
+   
     const int _oscillatorCount = 128;
     const int _WaveTableLength = 4096;
     std::vector<WavetableOscillator> _oscillators;
@@ -85,7 +90,8 @@ private:
     std::vector<float> generateTriangularWaveTable();
     // generates asmples of a square wave period.
     std::vector<float> generateSquareWaveTable();
-    
+    // keeps track of the number of active MIDI note numbers
+    std::vector<int> activeOscillatorIds;
     
     // converts a MIDI note number (an integer corresponding to a key on a MIDI keyboard) to frequency in Hz (assuming a certain tuning of the piano).
     static float midiNoteNumberToFrequency(int midiNoteNumber);

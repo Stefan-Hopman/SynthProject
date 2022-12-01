@@ -27,7 +27,8 @@ public:
     float applyADSR(const float& sample);
     void setADSR(const Stefan::ADSR::Parameters& ADSRParameters);
     void getSamples(float* buffer, const int& beginSample, const int &endSample);
-    void setFrequency(float& frequency);
+    
+    void setFrequency(float& frequency, const bool& NoteOn);
     void setWaveIndex(const int& waveIndex);
     void noteOff();
     void stop();
@@ -42,5 +43,6 @@ private:
     float index = 0.f;
     float indexIncrement = 0.f;
     int _waveIndex = 0;
+    float _frequency = 0.f;
 };
 

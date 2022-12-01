@@ -23,7 +23,12 @@ namespace GUI
         public:
             Thumb();
             void paint(juce::Graphics& g) override;
+            void mouseDown(const juce::MouseEvent& event) override;
+            void mouseDrag(const juce::MouseEvent& event) override;
         private:
+            juce::ComponentDragger dragger;
+            juce::ComponentBoundsConstrainer constrainer;
+            
             JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Thumb);
         };
         XyPad();
@@ -34,7 +39,8 @@ namespace GUI
     private:
         std::vector<juce::Slider*> xSliders, ySliders;
         Thumb thumb;
-        static constexpr int thumbSize = 40;
+        std::mutex vectorMutex;
+        static constexpr int thumbSize = 30;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XyPad);
     

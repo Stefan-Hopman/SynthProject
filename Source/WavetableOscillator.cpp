@@ -53,9 +53,13 @@ void WavetableOscillator::setWaveIndex(const int& waveIndex)
     _waveIndex = waveIndex;
 }
 
-void WavetableOscillator::setFrequency(float& frequency)
+void WavetableOscillator::setFrequency(float& frequency, const bool& NoteOn)
 {
-    _ADSRManager.noteOn();
+    if (NoteOn == true)
+    {
+        _ADSRManager.noteOn();
+    }
+    
     indexIncrement = frequency * static_cast<float>(waveTables[_waveIndex].size()) / static_cast<float>(_sampleRate);
 }
 
