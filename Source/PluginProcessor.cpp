@@ -133,7 +133,15 @@ void ProjectFourSynthAudioProcessor::updateParameters()
     modulationParameters.lfoDepth_Pct = apvts.getRawParameterValue("Intensity")->load();
     
     modulationFx.setParameters(modulationParameters);
+    
+    // Distorsion parameters
+    Distorsion_Parameters distortionParams = distorsionFx.getParametes();
+    distortionParams.algorithm = static_cast<distorsionAlgorithm>(apvts.getRawParameterValue("Distorsion Type")->load());
+    distortionParams.drive = apvts.getRawParameterValue("Drive")->load();
+    distortionParams.mixPct = apvts.getRawParameterValue("MixPct")->load();
+    distorsionFx.setParameters(distortionParams);
 }
+
 
 juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcessor::createParameterLayout()
 {
@@ -163,7 +171,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterFloat>("Intensity", "Intensity", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Feedback", "Feedback", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
     layout.add(std::make_unique<juce::AudioParameterChoice>("Modulation Type", "Modulation Type", juce::StringArray {"None", "Chorus", "Flanger", "Vibrato"}, 0));
-    
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Distorsion Type", "Distorsion Type", juce::StringArray {"None", "Hyperbolic Tangent", "Arc Tangent", "Fuzz"}, 0));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Drive", "Drive", juce::NormalisableRange<float>(0.0f, 50.f, 0.5f, 1.f), 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("MixPct", "MixPcy", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
     
     return layout;
    
@@ -239,10 +249,15 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
         // ..do something to the data...
     }
     additiveWaveTableSynth.processBlock(buffer, midiMessages);
-    // Apply Modulation effect
+    // Apply Modulation Effect
     for (int i = 0; i < buffer.getNumSamples(); i++)
     {
         buffer.setSample(0, i, modulationFx.processAudioSample(buffer.getSample(0, i)));
+    }
+    // Apply Distorsion Effect
+    for (int i = 0; i < buffer.getNumSamples(); i++)
+    {
+        buffer.setSample(0, i, distorsionFx.processAudioSample(buffer.getSample(0, i)));
     }
     auto* firstChannel = buffer.getWritePointer(0);
     for (int channel = 1; channel < buffer.getNumChannels(); ++channel)

@@ -13,8 +13,8 @@
 float Distorsion::processAudioSample(const float& xn)
 {
     float mix = (_params.mixPct - 50.f)/50.f + 1.f;
-    float bClean = std::cos(mix * kPi/4.f);
-    float bDistorted = std::sin(mix * kPi/4.f);
+    float bClean = static_cast<float>(std::cos(mix * kPi_2/4.f));
+    float bDistorted = static_cast<float>(std::sin(mix * kPi_2/4.f));
     if(_params.algorithm == distorsionAlgorithm::None)
     {
         return xn;

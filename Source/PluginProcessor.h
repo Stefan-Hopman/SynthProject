@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "AdditiveWavetableSynth.h"
 #include "Modulation.h"
+#include "Distorsion.h"
 #include "PresetManager.h"
 //==============================================================================
 /**
@@ -65,6 +66,7 @@ private:
     void updateParameters();
     AdditiveWavetableSynth additiveWaveTableSynth = AdditiveWavetableSynth(4); // 4 synths in the additive 
     Modulation modulationFx; // effect for different modulations (vibrato, chorus, flanger)
+    Distorsion distorsionFx; // effect for different distorsions
     // Audio plugin parameters
     std::unique_ptr<Service::PresetManager> presetManager;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessor)

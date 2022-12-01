@@ -13,7 +13,7 @@
 #include <JuceHeader.h>
 namespace GUI
 {
-    class XyPad : public juce::Component
+    class XyPad : public juce::Component, juce::Slider::Listener
     {
     public:
         enum class Axis { X, Y };
@@ -25,6 +25,7 @@ namespace GUI
             void paint(juce::Graphics& g) override;
             void mouseDown(const juce::MouseEvent& event) override;
             void mouseDrag(const juce::MouseEvent& event) override;
+            std::function<void(juce::Point<double>)> moveCallback;
         private:
             juce::ComponentDragger dragger;
             juce::ComponentBoundsConstrainer constrainer;
@@ -37,6 +38,7 @@ namespace GUI
         void registerSlider(juce::Slider* slider, Axis axis);
         void deregisterSlider(juce::Slider* slider);
     private:
+        void sliderValueChanged(juce::Slider* slider) override;
         std::vector<juce::Slider*> xSliders, ySliders;
         Thumb thumb;
         std::mutex vectorMutex;

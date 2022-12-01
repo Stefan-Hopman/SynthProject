@@ -111,7 +111,6 @@ namespace GUI
             {
                 presetManager.loadPreset(presetList.getItemText(presetList.getSelectedItemIndex()));
             }
-            
         }
         Service::PresetManager& presetManager;
         juce::TextButton saveButton, deletePresetButton, previousPresetButton, nextPresetButton;

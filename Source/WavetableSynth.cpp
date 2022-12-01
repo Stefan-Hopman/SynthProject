@@ -188,8 +188,8 @@ void WavetableSynth::handleMidiEvent(const juce::MidiMessage& midiMessage)
     {
     
         const auto oscillatorId = midiMessage.getNoteNumber();
-        float freqMultiplier = halfStepToFreqMultiplier(_params.pitchShift);
-        float frequency = freqMultiplier * midiNoteNumberToFrequency(oscillatorId);
+        
+        float frequency =  midiNoteNumberToFrequency(oscillatorId + _params.pitchShift);
         activeOscillatorIds.push_back(oscillatorId);
         _oscillators[oscillatorId].setFrequency(frequency, true);
     }
@@ -232,7 +232,7 @@ void WavetableSynth::setParameters(const WavetableSynth_Parameters& params)
         float freqMultiplier = halfStepToFreqMultiplier(params.pitchShift);
         for (int i = 0; i < activeOscillatorIds.size() ; i++)
         {
-            float frequency = freqMultiplier * midiNoteNumberToFrequency(activeOscillatorIds[i]);
+            float frequency = midiNoteNumberToFrequency(activeOscillatorIds[i] + params.pitchShift);
             _oscillators[activeOscillatorIds[i]].setFrequency(frequency, false);
         }
     }

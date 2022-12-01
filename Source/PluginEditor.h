@@ -86,11 +86,22 @@ private:
     juce::Slider feedbackSlider;
     juce::Label feedbackLabel;
     
+    // Distorsion
+    juce::Label distorsionLabel;
+    juce::ComboBox distorsionTypeBox;
+    juce::Label driveLabel;
+    juce::Slider driveSlider;
+    juce::Label mixPctLabel;
+    juce::Slider mixPctSlider;
+    
+    
+    
     // XY Pad
     GUI::XyPad xyPad;
     
     // Preset
     GUI::PresetPanel presetPanel;
+    
     
     
     // Modulation Attachments
@@ -99,10 +110,16 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> feedbackAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> intesityAttachment;
     
+    // Pitch Shift Attachments
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchShiftOneAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchShiftTwoAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchShiftThreeAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchShiftFourAttachment;
+    
+    // Distorsion Attachments
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> distorsionTypeBoxAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> driveAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixPctAttachment;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessorEditor)
 };

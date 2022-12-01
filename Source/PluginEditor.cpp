@@ -153,6 +153,31 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     intensityLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(intensitySlider);
     
+    // Distorsion
+    distorsionTypeBox.addItem("None", 1);
+    distorsionTypeBox.addItem("Hyperbolic Tangent", 2);
+    distorsionTypeBox.addItem("Arc Tangent", 3);
+    distorsionTypeBox.addItem("Fuzz", 4);
+    distorsionTypeBox.setJustificationType(juce::Justification::centred);
+    distorsionLabel.attachToComponent(&distorsionTypeBox, false);
+    distorsionLabel.setText("Distorsion Type", juce::dontSendNotification);
+    distorsionLabel.setFont(16.f);
+    distorsionLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(distorsionTypeBox);
+    driveSlider.setSliderStyle(juce::Slider::LinearVertical);
+    driveSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    driveLabel.attachToComponent(&driveSlider, false);
+    driveLabel.setText("Drive", juce::dontSendNotification);
+    driveLabel.setJustificationType(juce::Justification::centred);
+    driveLabel.setFont(14.f);
+    addAndMakeVisible(driveSlider);
+    mixPctSlider.setSliderStyle(juce::Slider::LinearVertical);
+    mixPctSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    mixPctLabel.attachToComponent(&mixPctSlider, false);
+    mixPctLabel.setText("Mix Pct", juce::dontSendNotification);
+    mixPctLabel.setFont(14.f);
+    mixPctLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(mixPctSlider);
     
     // Set Colors
     getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::purple);
@@ -193,6 +218,10 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     pitchShiftThreeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator Three Pitch Shift", oscillatorPitchShiftSliders[2]);
     pitchShiftFourAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator Four Pitch Shift", oscillatorPitchShiftSliders[3]);
     
+    distorsionTypeBoxAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Distorsion Type", distorsionTypeBox);
+    driveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Drive", driveSlider);
+    mixPctAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "MixPct", mixPctSlider);
+   
     
     addAndMakeVisible(xyPad);
     addAndMakeVisible(presetPanel);
@@ -240,6 +269,7 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     decayTimeSlider.setBounds(adsrStartPoint + 2 * x, 76.0 * y, adsrSection - 4 * x, 4.5*y);
     releaseTimeSlider.setBounds(adsrStartPoint + 2 * x, 84.5 * y, adsrSection - 4 * x, 4.5*y);
     sustainLevelSlider.setBounds(adsrStartPoint + 2 * x, 93 * y, adsrSection - 4 * x, 4.5*y);
+    
     // Modulation Components
     auto modulationStartPoint = 20 * x;
     auto modulationSection = 20 * x;
@@ -248,6 +278,14 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     lfoRateSlider.setBounds(modulationStartPoint + 2 * x, 72.5 * y, modulationSection - 4 * x, 6*y);
     feedbackSlider.setBounds(modulationStartPoint, 83.0 * y, modulationSection/2, 16.0*y);
     intensitySlider.setBounds(modulationStartPoint +  modulationSection/2, 83.0 * y, modulationSection/2, 16.0*y);
+    
+    // Distorsion Components
+    auto distorsionStartPoint = 40 *x;
+    auto distorsionSection = 15 * x;
+    distorsionTypeBox.setBounds(distorsionStartPoint + 2 * x, 64 * y, distorsionSection - 4 * x, 4*y);
+    driveSlider.setBounds(distorsionStartPoint , 72.5*y, distorsionSection/2 , 25*y);
+    mixPctSlider.setBounds(distorsionStartPoint  + distorsionSection/2, 72.5*y, distorsionSection/2 , 25*y);
+    
     
     // XY Pad
     auto xyPadStartPoint = 80 * x;
