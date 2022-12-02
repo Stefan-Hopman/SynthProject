@@ -16,6 +16,12 @@
         <FILE id="pEgbfZ" name="XyPad.h" compile="0" resource="0" file="Source/XyPad.h"/>
       </GROUP>
       <GROUP id="{394139B3-EDFD-5338-E4F8-D25987BFB432}" name="Stefan_Fx">
+        <GROUP id="{19CA31BA-2341-19DB-1281-FDF8CA0BBEDD}" name="Filter">
+          <FILE id="QdWVxz" name="Biquad.cpp" compile="1" resource="0" file="Source/Biquad.cpp"/>
+          <FILE id="jtHflf" name="Biquad.h" compile="0" resource="0" file="Source/Biquad.h"/>
+          <FILE id="ILsNeO" name="SynthFilter.cpp" compile="1" resource="0" file="Source/SynthFilter.cpp"/>
+          <FILE id="eQFaST" name="SynthFilter.h" compile="0" resource="0" file="Source/SynthFilter.h"/>
+        </GROUP>
         <GROUP id="{A1040E2E-44A2-0232-2376-D681A08CCF2A}" name="Distorsion">
           <FILE id="h0MCAH" name="Distorsion.cpp" compile="1" resource="0" file="Source/Distorsion.cpp"/>
           <FILE id="grc2Yh" name="Distorsion.h" compile="0" resource="0" file="Source/Distorsion.h"/>

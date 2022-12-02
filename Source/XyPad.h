@@ -42,7 +42,7 @@ namespace GUI
         std::vector<juce::Slider*> xSliders, ySliders;
         Thumb thumb;
         std::mutex vectorMutex;
-        static constexpr int thumbSize = 30;
+        static constexpr int thumbSize = 25;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XyPad);
     

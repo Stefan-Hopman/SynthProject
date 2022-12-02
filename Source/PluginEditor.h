@@ -94,15 +94,24 @@ private:
     juce::Label mixPctLabel;
     juce::Slider mixPctSlider;
     
-    
+    // Filtering
+    juce::Label filterLabel;
+    juce::ComboBox filterTypeBox;
+    juce::Label filterQLabel;
+    juce::Slider filterQSlider;
+    juce::Label filterFcLabel;
+    juce::Slider filterFcSlider;
     
     // XY Pad
     GUI::XyPad xyPad;
-    
+    // XY Pad Combo Boxes
+    juce::Label xyPadBoxXAxisLabel;
+    juce::ComboBox xyPadBoxXAxis;
+    juce::Label xyPadBoxYAxisLabel;
+    juce::ComboBox xyPadBoxYAxis;
+     
     // Preset
     GUI::PresetPanel presetPanel;
-    
-    
     
     // Modulation Attachments
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> modTypeBoxAttachment;
@@ -120,6 +129,12 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> distorsionTypeBoxAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> driveAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixPctAttachment;
+    
+    // Filter Attachments
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> filterTypeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> qSliderAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> fcSliderAttachment;
+    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessorEditor)
 };

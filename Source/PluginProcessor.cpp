@@ -140,6 +140,14 @@ void ProjectFourSynthAudioProcessor::updateParameters()
     distortionParams.drive = apvts.getRawParameterValue("Drive")->load();
     distortionParams.mixPct = apvts.getRawParameterValue("MixPct")->load();
     distorsionFx.setParameters(distortionParams);
+    
+    // Filter Parameters
+    BiquadTempalteFilterParamters filterParameters = synthFilter.getParameters();
+    filterParameters.Q = apvts.getRawParameterValue("Q Value")->load();
+    filterParameters.crossOverFrequency = apvts.getRawParameterValue("Cross Over Frequency")->load();
+    filterParameters.filterType = static_cast<BiquadFilterType>(apvts.getRawParameterValue("Filter Types")->load());
+    synthFilter.setParameters(filterParameters);
+    
 }
 
 
@@ -174,7 +182,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterChoice>("Distorsion Type", "Distorsion Type", juce::StringArray {"None", "Hyperbolic Tangent", "Arc Tangent", "Fuzz"}, 0));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Drive", "Drive", juce::NormalisableRange<float>(0.0f, 50.f, 0.5f, 1.f), 1.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("MixPct", "MixPcy", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Q Value", "Q Value", juce::NormalisableRange<float>(0.1f, 9.8f, 0.1, 1.f), 0.71f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Cross Over Frequency", "Cross Over Frequency", juce::NormalisableRange<float>(10.f, 20000.f, 10.f, 1.f), 1000.f));
     
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Filter Types", "Filter Types", juce::StringArray {"None", "LPF2", "LPF4", "HPF2", "HPF4", "BPF2", "BPF4"}, 0));
     return layout;
    
 }
@@ -187,6 +198,8 @@ void ProjectFourSynthAudioProcessor::prepareToPlay (double sampleRate, int sampl
     
     additiveWaveTableSynth.prepareToPlay(sampleRate);
     modulationFx.reset(sampleRate);
+    synthFilter.setSampleRate(static_cast<float>(sampleRate));
+    synthFilter.reset();
 }
 
 void ProjectFourSynthAudioProcessor::releaseResources()
@@ -258,6 +271,15 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
     for (int i = 0; i < buffer.getNumSamples(); i++)
     {
         buffer.setSample(0, i, distorsionFx.processAudioSample(buffer.getSample(0, i)));
+    }
+    // Apply Filtering
+    if (synthFilter.isActive() == true)
+    {
+        for (int i = 0; i < buffer.getNumSamples(); i++)
+        {
+            buffer.setSample(0, i, synthFilter.processAudioSample(buffer.getSample(0, i)));
+        }
+        
     }
     auto* firstChannel = buffer.getWritePointer(0);
     for (int channel = 1; channel < buffer.getNumChannels(); ++channel)

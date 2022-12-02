@@ -229,7 +229,6 @@ void WavetableSynth::setParameters(const WavetableSynth_Parameters& params)
     }
     if (_params.pitchShift != params.pitchShift)
     {
-        float freqMultiplier = halfStepToFreqMultiplier(params.pitchShift);
         for (int i = 0; i < activeOscillatorIds.size() ; i++)
         {
             float frequency = midiNoteNumberToFrequency(activeOscillatorIds[i] + params.pitchShift);

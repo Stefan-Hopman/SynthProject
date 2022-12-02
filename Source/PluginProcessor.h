@@ -12,6 +12,7 @@
 #include "AdditiveWavetableSynth.h"
 #include "Modulation.h"
 #include "Distorsion.h"
+#include "Biquad.h"
 #include "PresetManager.h"
 //==============================================================================
 /**
@@ -67,6 +68,7 @@ private:
     AdditiveWavetableSynth additiveWaveTableSynth = AdditiveWavetableSynth(4); // 4 synths in the additive 
     Modulation modulationFx; // effect for different modulations (vibrato, chorus, flanger)
     Distorsion distorsionFx; // effect for different distorsions
+    BiquadTemplateFilter synthFilter;
     // Audio plugin parameters
     std::unique_ptr<Service::PresetManager> presetManager;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessor)

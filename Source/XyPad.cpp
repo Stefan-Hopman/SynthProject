@@ -73,8 +73,25 @@ namespace GUI
     
     void XyPad::paint(juce::Graphics &g)
     {
-        g.setColour(juce::Colours::black);
-        g.fillRoundedRectangle(getLocalBounds().toFloat(), 10.f);
+        const auto bounds = getLocalBounds().toFloat();
+        
+        g.setGradientFill(juce::ColourGradient{ juce::Colours::black.brighter(0.2f), bounds.getTopLeft(), juce::Colours::black.brighter(0.1f), bounds.getBottomLeft(), false });
+        g.fillRoundedRectangle(bounds, 10);
+        
+        const auto r = thumbSize / 2.f;
+        const auto thumbX = thumb.getX() + r;
+        const auto thumbY = thumb.getY() + r;
+
+        g.setColour(juce::Colours::violet);
+        g.drawLine(juce::Line<float> { {0.f, thumbY}, { bounds.getWidth(), thumbY } });
+
+        g.setColour(juce::Colours::cyan);
+        g.drawLine(juce::Line<float> { {thumbX, 0.f}, { thumbX, bounds.getHeight() } });
+
+        juce::Path circle;
+        circle.addEllipse(thumb.getBoundsInParent().toFloat());
+        const juce::DropShadow dropShadow;
+        dropShadow.drawForPath(g, circle);
     }
 
     void XyPad::registerSlider(juce::Slider* slider, Axis axis)

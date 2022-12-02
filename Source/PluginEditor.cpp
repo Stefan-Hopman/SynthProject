@@ -60,7 +60,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     for (int i = 0; i < 4; i++)
     {
         oscillatorPitchShiftSliders[i].setSliderStyle(juce::Slider::RotaryVerticalDrag);
-        oscillatorPitchShiftSliders[i].setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+        oscillatorPitchShiftSliders[i].setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 17.5);
         oscillatorPitchShiftSliders[i].setTextValueSuffix(" s");
         oscillatorPitchShiftLabels[i].attachToComponent(&oscillatorPitchShiftSliders[i], false);
         oscillatorPitchShiftLabels[i].setText("Pitch Shift", juce::dontSendNotification);
@@ -179,6 +179,78 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     mixPctLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(mixPctSlider);
     
+    // Filtering
+    filterTypeBox.addItem("None", 1);
+    filterTypeBox.addItem("LPF 12 dB", 2);
+    filterTypeBox.addItem("LPF 24 dB", 3);
+    filterTypeBox.addItem("HPF 12 dB", 4);
+    filterTypeBox.addItem("HPF 24 dB", 5);
+    filterTypeBox.addItem("BPF 12 dB", 6);
+    filterTypeBox.addItem("BPF 24 dB", 7);
+    filterTypeBox.setJustificationType(juce::Justification::centred);
+    filterLabel.attachToComponent(&filterTypeBox, false);
+    filterLabel.setText("Filter", juce::dontSendNotification);
+    filterLabel.setFont(16.f);
+    filterLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(filterTypeBox);
+    filterQSlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    filterQSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    filterQLabel.attachToComponent(&filterQSlider, false);
+    filterQLabel.setFont(14.f);
+    filterQLabel.setText("Q", juce::dontSendNotification);
+    filterQLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(filterQSlider);
+    filterFcSlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    filterFcSlider.setTextValueSuffix(" Hz");
+    filterFcSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 70, 20);
+    filterFcLabel.attachToComponent(&filterFcSlider, false);
+    filterFcLabel.setFont(14.f);
+    filterFcLabel.setText("Crossover Freq", juce::dontSendNotification);
+    filterFcLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(filterFcSlider);
+    
+    // XY Pad
+    xyPadBoxXAxis.addItem("None", 1);
+    xyPadBoxXAxis.addItem("Osc Volume", 2);
+    xyPadBoxXAxis.addItem("Pitch Shift", 3);
+    xyPadBoxXAxis.addItem("Attack", 4);
+    xyPadBoxXAxis.addItem("Decay", 5);
+    xyPadBoxXAxis.addItem("Release", 6);
+    xyPadBoxXAxis.addItem("Sustain", 7);
+    xyPadBoxXAxis.addItem("LFO Rate", 8);
+    xyPadBoxXAxis.addItem("Feedback", 9);
+    xyPadBoxXAxis.addItem("Intensity", 10);
+    xyPadBoxXAxis.addItem("Drive", 11);
+    xyPadBoxXAxis.addItem("Mix %", 12);
+    xyPadBoxXAxis.addItem("Cross Freq", 13);
+    xyPadBoxXAxis.addItem("Q", 14);
+    xyPadBoxXAxis.setJustificationType(juce::Justification::centred);
+    xyPadBoxXAxisLabel.attachToComponent(&xyPadBoxXAxis, false);
+    xyPadBoxXAxisLabel.setFont(14.f);
+    xyPadBoxXAxisLabel.setText("X Axis", juce::dontSendNotification);
+    addAndMakeVisible(xyPadBoxXAxis);
+    
+    xyPadBoxYAxis.addItem("None", 1);
+    xyPadBoxYAxis.addItem("Osc Volume", 2);
+    xyPadBoxYAxis.addItem("Pitch Shift", 3);
+    xyPadBoxYAxis.addItem("Attack", 4);
+    xyPadBoxYAxis.addItem("Decay", 5);
+    xyPadBoxYAxis.addItem("Release", 6);
+    xyPadBoxYAxis.addItem("Sustain", 7);
+    xyPadBoxYAxis.addItem("LFO Rate", 8);
+    xyPadBoxYAxis.addItem("Feedback", 9);
+    xyPadBoxYAxis.addItem("Intensity", 10);
+    xyPadBoxYAxis.addItem("Drive", 11);
+    xyPadBoxYAxis.addItem("Mix %", 12);
+    xyPadBoxYAxis.addItem("Cross Freq", 13);
+    xyPadBoxYAxis.addItem("Q", 14);
+    xyPadBoxYAxis.setJustificationType(juce::Justification::centred);
+    xyPadBoxYAxisLabel.attachToComponent(&xyPadBoxYAxis, false);
+    xyPadBoxYAxisLabel.setFont(14.f);
+    xyPadBoxYAxisLabel.setText("Y Axis", juce::dontSendNotification);
+    addAndMakeVisible(xyPadBoxYAxis);
+
+    
     // Set Colors
     getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::purple);
     getLookAndFeel().setColour(juce::Slider::trackColourId, juce::Colours::magenta);
@@ -221,8 +293,9 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     distorsionTypeBoxAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Distorsion Type", distorsionTypeBox);
     driveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Drive", driveSlider);
     mixPctAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "MixPct", mixPctSlider);
-   
-    
+    filterTypeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "Filter Types", filterTypeBox);
+    qSliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Q Value", filterQSlider);
+    fcSliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Cross Over Frequency", filterFcSlider);
     addAndMakeVisible(xyPad);
     addAndMakeVisible(presetPanel);
     
@@ -249,16 +322,16 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     auto x = getWidth()/100;
     auto y = getHeight()/100;
     appTitle.setBounds(35*x, 6*y, 30*x, 10*y);
-    auto oscillatorsStartPoint = 10 * x;
-    auto oscillatorsEndPoint = 90 * x;
+    auto oscillatorsStartPoint = 0 * x;
+    auto oscillatorsEndPoint = 80 * x;
     auto oscillatorSection = (oscillatorsEndPoint - oscillatorsStartPoint) / 4;
     for(int i = 0; i < 4; i++)
     {
-        oscillatorLabels[i].setBounds(oscillatorsStartPoint + oscillatorSection*i, 17.5*y, oscillatorSection/2, 3*y);
+        oscillatorLabels[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 2*x, 17.5*y, oscillatorSection/2 - 2*x, 3*y);
         oscillatorActives[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + oscillatorSection/2, 17.5*y, oscillatorSection/2, 3*y);
-        waveChoices[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 5*x, 22*y, oscillatorSection - 10*x, 5*y);
-        oscillatorGains[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + x, 32*y, oscillatorSection - 2*x, 6*y);
-        oscillatorPitchShiftSliders[i].setBounds(oscillatorsStartPoint + oscillatorSection*i, 43*y, oscillatorSection, 15 *y);
+        waveChoices[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 5*x, 22*y, oscillatorSection - 10*x, 3*y);
+        oscillatorGains[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 1.5*x, 30*y, oscillatorSection - 3*x, 6*y);
+        oscillatorPitchShiftSliders[i].setBounds(oscillatorsStartPoint + oscillatorSection*i, 41*y, oscillatorSection, 14 *y);
     }
     
     auto adsrStartPoint = 0 * x;
@@ -286,10 +359,19 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     driveSlider.setBounds(distorsionStartPoint , 72.5*y, distorsionSection/2 , 25*y);
     mixPctSlider.setBounds(distorsionStartPoint  + distorsionSection/2, 72.5*y, distorsionSection/2 , 25*y);
     
+    // Filter Components
+    auto filterStartPoint = 80 * x;
+    auto filterSection = 20 * x;
+    filterTypeBox.setBounds(filterStartPoint + x, 64 * y, filterSection - 2 * x, 3.5 * y);
+    filterFcSlider.setBounds(filterStartPoint , 71*y, filterSection/2 , 15*y);
+    filterQSlider.setBounds(filterStartPoint + filterSection/2 , 71*y, filterSection/2 , 15*y);
+    
     
     // XY Pad
     auto xyPadStartPoint = 80 * x;
-    auto xyPadSection = 18 * x;
-    xyPad.setBounds(xyPadStartPoint, 62 * y, xyPadSection, 36*y);
+    auto xyPadSection = 20 * x;
+    xyPad.setBounds(xyPadStartPoint, 17.5*y , xyPadSection - x, 40*y);
+    xyPadBoxXAxis.setBounds(xyPadStartPoint, 12.5*y, xyPadSection/2 - x, 3*y);
+    xyPadBoxYAxis.setBounds(xyPadStartPoint + xyPadSection/2, 12.5*y, xyPadSection/2 - x, 3*y);
     presetPanel.setBounds(getLocalBounds().removeFromTop(proportionOfHeight(0.06f)));
 }
