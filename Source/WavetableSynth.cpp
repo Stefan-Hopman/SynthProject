@@ -118,7 +118,6 @@ void WavetableSynth::initializeOscillators()
 // called whenevr a new wave type is selected
 void WavetableSynth::updateOscillators(WaveType wave)
 {
-    
     // an oscillator for every MIDI note possibilty
     constexpr auto OSCILLATOR_COUNT = 128;
     const int waveTableIndex = static_cast<int>(wave);
@@ -126,7 +125,6 @@ void WavetableSynth::updateOscillators(WaveType wave)
     {
         _oscillators[i].setWaveIndex(waveTableIndex);
     }
-    
 }
 
 void WavetableSynth::updateOscillatorEnvelopes()
@@ -141,7 +139,6 @@ void WavetableSynth::updateOscillatorEnvelopes()
     {
         _oscillators[i].setADSR(adsrParams);
     }
-    
 }
 
 
@@ -149,6 +146,8 @@ void WavetableSynth::prepareToPlay(double &sampleRate)
 {
     _sampleRate = sampleRate;
     initializeOscillators(); // puts audio data into the oscillators
+    calculateSmoothingCoeffs();
+    _s_OscVol = 0.f;
 }
 
 void WavetableSynth::processBlock(juce::AudioBuffer<float>& buffer,
@@ -236,8 +235,11 @@ void WavetableSynth::setParameters(const WavetableSynth_Parameters& params)
         }
     }
     _params = params;
-    
-    
+}
+
+void WavetableSynth::calculateSmoothingCoeffs()
+{
+    _linearIncrementOscVolume = (0.f - (-60.f)) / (_smoothingTimeMs * 0.001f * _sampleRate);
 }
 
 float WavetableSynth::midiNoteNumberToFrequency(const int midiNoteNumber)
@@ -265,7 +267,8 @@ void WavetableSynth::render(juce::AudioBuffer<float>& buffer, const int& beginSa
             {
                 for(int i = beginSample; i < endSample; i++)
                 {
-                    buffer.setSample(0, i, buffer.getSample(0, i) + (_params.gain * onGain * oscillator.applyADSR(oscillator.getSample())));
+                    float realTimeGain = powf(10.f, applySmoothing(_params.gain, _s_OscVol, _linearIncrementOscVolume)/ 20.f);
+                    buffer.setSample(0, i, buffer.getSample(0, i) + (realTimeGain * onGain * oscillator.applyADSR(oscillator.getSample())));
                 }
             }
         }
@@ -280,3 +283,34 @@ void WavetableSynth::render(juce::AudioBuffer<float>& buffer, const int& beginSa
     
 }
 
+float WavetableSynth::applySmoothing(float& val, float& state, const float& linInc)
+{
+    if(val > state)
+    {
+        state = state + linInc;
+        if (state > val)
+        {
+            state = val;
+        }
+    }
+    else if (val < state)
+    {
+        state = state - linInc;
+        if (state < val)
+        {
+            state = val;
+        }
+    }
+    if (val == state)
+    {
+        return val;
+    }
+    else
+    {
+        return state;
+    }
+}
+
+ 
+ 
+ 

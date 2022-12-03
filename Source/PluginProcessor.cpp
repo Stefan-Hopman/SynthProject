@@ -100,10 +100,12 @@ void ProjectFourSynthAudioProcessor::updateParameters()
 {
     
     AdditiveWavetableSynth_Parameters waveTableSynthParams = additiveWaveTableSynth.getParameters();
-    waveTableSynthParams.gains[0] = powf(10.f, apvts.getRawParameterValue("Oscillator One Gain")->load() / 20.f);
-    waveTableSynthParams.gains[1] = powf(10.f, apvts.getRawParameterValue("Oscillator Two Gain")->load() /20.f);
-    waveTableSynthParams.gains[2] = powf(10.f, apvts.getRawParameterValue("Oscillator Three Gain")->load()/ 20.f);
-    waveTableSynthParams.gains[3] = powf(10.f, apvts.getRawParameterValue("Oscillator Four Gain")->load() / 20.f);
+    
+    waveTableSynthParams.gains[0] = apvts.getRawParameterValue("Oscillator One Gain")->load();
+    waveTableSynthParams.gains[1] = apvts.getRawParameterValue("Oscillator Two Gain")->load();
+    waveTableSynthParams.gains[2] = apvts.getRawParameterValue("Oscillator Three Gain")->load();
+    waveTableSynthParams.gains[3] = apvts.getRawParameterValue("Oscillator Four Gain")->load();
+    
     
     waveTableSynthParams.activeStates[0] = apvts.getRawParameterValue("Oscillator One On")->load();
     waveTableSynthParams.activeStates[1] = apvts.getRawParameterValue("Oscillator Two On")->load();
@@ -200,6 +202,7 @@ void ProjectFourSynthAudioProcessor::prepareToPlay (double sampleRate, int sampl
     modulationFx.reset(sampleRate);
     synthFilter.setSampleRate(static_cast<float>(sampleRate));
     synthFilter.reset();
+    
 }
 
 void ProjectFourSynthAudioProcessor::releaseResources()

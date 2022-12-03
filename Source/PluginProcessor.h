@@ -71,5 +71,6 @@ private:
     BiquadTemplateFilter synthFilter;
     // Audio plugin parameters
     std::unique_ptr<Service::PresetManager> presetManager;
+    // smoothing parameters
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessor)
 };

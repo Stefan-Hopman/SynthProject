@@ -41,6 +41,9 @@ AdditiveWavetableSynth::AdditiveWavetableSynth(const int synthCount)
         synthParameters.pitchShift = _params.pitchShift[i];
         _synths[i].setParameters(synthParameters);
     }
+    // set oscillator volumes
+   
+    
 }
 
 AdditiveWavetableSynth::~AdditiveWavetableSynth()
@@ -55,6 +58,8 @@ void AdditiveWavetableSynth::prepareToPlay(double& sampleRate)
     {
         _synths[i].prepareToPlay(sampleRate);
     }
+    
+    
 }
 
 void AdditiveWavetableSynth::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
@@ -98,5 +103,7 @@ void AdditiveWavetableSynth::setParameters(const AdditiveWavetableSynth_Paramete
         wavetableParams.pitchShift = params.pitchShift[i];
         _synths[i].setParameters(wavetableParams);
     }
-    
 }
+
+
+    

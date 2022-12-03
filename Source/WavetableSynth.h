@@ -72,6 +72,10 @@ public:
     // translates a MIDI message to the synthesizer’s parameters change.
     void handleMidiEvent(const juce::MidiMessage& midiEvent);
     
+    // calculate smoothing parameters
+    void calculateSmoothingCoeffs();
+    // apply smoothing
+    float applySmoothing(float& val, float& state, const float& linInc);
 private:
     // Structs for keeping data
     WavetableSynth_Parameters _params;
@@ -101,6 +105,10 @@ private:
     void updateOscillators(WaveType wave);
     // updatate all 128 on a new envelope
     void updateOscillatorEnvelopes();
- 
+    
+    // Smoothing Parameters
+    float _smoothingTimeMs = 1000.f;
+    float _linearIncrementOscVolume = 0.f;
+    float _s_OscVol = 0.f;
 };
 
