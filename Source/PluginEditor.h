@@ -135,6 +135,10 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> qSliderAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> fcSliderAttachment;
     
+    void changeXAxis();
+    void changeYAxis();
     
+    juce::Slider *activeXAxisSlider = NULL;
+    juce::Slider *activeYAxisSlider = NULL;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectFourSynthAudioProcessorEditor)
 };

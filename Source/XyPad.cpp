@@ -46,19 +46,18 @@ namespace GUI
         addAndMakeVisible(thumb);
         thumb.moveCallback = [&](juce::Point<double> position)
         {
-            const std::lock_guard<std::mutex> lock(vectorMutex);
+            const std::lock_guard<std::mutex> lock(std::mutex);
             const auto bounds = getLocalBounds().toDouble();
             const auto w = static_cast<double>(thumbSize);
             for (auto* slider : xSliders)
             {
                 slider->setValue(juce::jmap(position.getX(), 0.0, bounds.getWidth() - w, slider->getMinimum(), slider->getMaximum()));
             }
-            for (auto* slider: ySliders)
+            for (auto* slider : ySliders)
             {
-                slider->setValue(juce::jmap(position.getY(), bounds.getWidth() - w,  0.0, slider->getMinimum(), slider->getMinimum()));
+                slider->setValue(juce::jmap(position.getY(), bounds.getHeight() - w, 0.0, slider->getMinimum(), slider->getMaximum()));
             }
             repaint();
-            
         };
     }
 
@@ -121,25 +120,23 @@ namespace GUI
 
     void XyPad::sliderValueChanged(juce::Slider* slider)
     {
-        // Avoid loop back
         if (thumb.isMouseOverOrDragging(false))
-        {
             return;
-        }
-        // Figure out if the slider belongs to xSliders or ySliders
-        const auto isXAxisSlider = std::find(xSliders.begin(), xSliders.end(), slider) != xSliders.end();
         const auto bounds = getLocalBounds().toDouble();
         const auto w = static_cast<double>(thumbSize);
+        const auto isXAxisSlider = std::find(xSliders.begin(), xSliders.end(), slider) != xSliders.end();
         if (isXAxisSlider)
         {
-            thumb.setTopLeftPosition(juce::jmap(slider->getValue(), slider->getMinimum(), slider->getMaximum(), 0.0, bounds.getWidth() - w), thumb.getY());
-        }
-        else
+            thumb.setTopLeftPosition(
+                juce::jmap(slider->getValue(), slider->getMinimum(), slider->getMaximum(), 0.0, bounds.getWidth() - w),
+                thumb.getY());
+        } else
         {
-            thumb.setTopLeftPosition(thumb.getX(), juce::jmap(slider->getValue(), slider->getMinimum(), slider->getMaximum(), bounds.getHeight() - w, 0.0));
+            thumb.setTopLeftPosition(
+                thumb.getX(),
+                juce::jmap(slider->getValue(), slider->getMinimum(), slider->getMaximum(), bounds.getHeight() - w, 0.0));
         }
         repaint();
-        
         
     }
 

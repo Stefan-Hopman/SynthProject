@@ -211,39 +211,56 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     
     // XY Pad
     xyPadBoxXAxis.addItem("None", 1);
-    xyPadBoxXAxis.addItem("Osc Volume", 2);
-    xyPadBoxXAxis.addItem("Pitch Shift", 3);
-    xyPadBoxXAxis.addItem("Attack", 4);
-    xyPadBoxXAxis.addItem("Decay", 5);
-    xyPadBoxXAxis.addItem("Release", 6);
-    xyPadBoxXAxis.addItem("Sustain", 7);
-    xyPadBoxXAxis.addItem("LFO Rate", 8);
-    xyPadBoxXAxis.addItem("Feedback", 9);
-    xyPadBoxXAxis.addItem("Intensity", 10);
-    xyPadBoxXAxis.addItem("Drive", 11);
-    xyPadBoxXAxis.addItem("Mix %", 12);
-    xyPadBoxXAxis.addItem("Cross Freq", 13);
-    xyPadBoxXAxis.addItem("Q", 14);
+    xyPadBoxXAxis.addItem("Osc 1 Volume", 2);
+    xyPadBoxXAxis.addItem("Osc 2 Volume", 3);
+    xyPadBoxXAxis.addItem("Osc 3 Volume", 4);
+    xyPadBoxXAxis.addItem("Osc 4 Volume", 5);
+    xyPadBoxXAxis.addItem("Pitch Shift 1", 6);
+    xyPadBoxXAxis.addItem("Pitch Shift 2", 7);
+    xyPadBoxXAxis.addItem("Pitch Shift 3", 8);
+    xyPadBoxXAxis.addItem("Pitch Shift 4", 9);
+    xyPadBoxXAxis.addItem("Attack", 10);
+    xyPadBoxXAxis.addItem("Decay", 11);
+    xyPadBoxXAxis.addItem("Release", 12);
+    xyPadBoxXAxis.addItem("Sustain", 13);
+    xyPadBoxXAxis.addItem("LFO Rate", 14);
+    xyPadBoxXAxis.addItem("Feedback", 15);
+    xyPadBoxXAxis.addItem("Intensity", 16);
+    xyPadBoxXAxis.addItem("Drive", 17);
+    xyPadBoxXAxis.addItem("Mix %", 18);
+    xyPadBoxXAxis.addItem("Cross Freq", 19);
+    xyPadBoxXAxis.addItem("Q", 20);
+    xyPadBoxXAxis.setSelectedItemIndex(0);
     xyPadBoxXAxis.setJustificationType(juce::Justification::centred);
     xyPadBoxXAxisLabel.attachToComponent(&xyPadBoxXAxis, false);
     xyPadBoxXAxisLabel.setFont(14.f);
     xyPadBoxXAxisLabel.setText("X Axis", juce::dontSendNotification);
+    xyPadBoxXAxis.onChange = [this] { changeXAxis(); };
+    xyPadBoxYAxis.onChange = [this] { changeYAxis(); };
     addAndMakeVisible(xyPadBoxXAxis);
     
     xyPadBoxYAxis.addItem("None", 1);
-    xyPadBoxYAxis.addItem("Osc Volume", 2);
-    xyPadBoxYAxis.addItem("Pitch Shift", 3);
-    xyPadBoxYAxis.addItem("Attack", 4);
-    xyPadBoxYAxis.addItem("Decay", 5);
-    xyPadBoxYAxis.addItem("Release", 6);
-    xyPadBoxYAxis.addItem("Sustain", 7);
-    xyPadBoxYAxis.addItem("LFO Rate", 8);
-    xyPadBoxYAxis.addItem("Feedback", 9);
-    xyPadBoxYAxis.addItem("Intensity", 10);
-    xyPadBoxYAxis.addItem("Drive", 11);
-    xyPadBoxYAxis.addItem("Mix %", 12);
-    xyPadBoxYAxis.addItem("Cross Freq", 13);
-    xyPadBoxYAxis.addItem("Q", 14);
+    xyPadBoxYAxis.addItem("Osc 1 Volume", 2);
+    xyPadBoxYAxis.addItem("Osc 2 Volume", 3);
+    xyPadBoxYAxis.addItem("Osc 3 Volume", 4);
+    xyPadBoxYAxis.addItem("Osc 4 Volume", 5);
+    xyPadBoxYAxis.addItem("Pitch Shift 1", 6);
+    xyPadBoxYAxis.addItem("Pitch Shift 2", 7);
+    xyPadBoxYAxis.addItem("Pitch Shift 3", 8);
+    xyPadBoxYAxis.addItem("Pitch Shift 4", 9);
+    xyPadBoxYAxis.addItem("Attack", 10);
+    xyPadBoxYAxis.addItem("Decay", 11);
+    xyPadBoxYAxis.addItem("Release", 12);
+    xyPadBoxYAxis.addItem("Sustain", 13);
+    xyPadBoxYAxis.addItem("LFO Rate", 14);
+    xyPadBoxYAxis.addItem("Feedback", 15);
+    xyPadBoxYAxis.addItem("Intensity", 16);
+    xyPadBoxYAxis.addItem("Drive", 17);
+    xyPadBoxYAxis.addItem("Mix %", 18);
+    xyPadBoxYAxis.addItem("Cross Freq", 19);
+    xyPadBoxYAxis.addItem("Q", 20);
+    xyPadBoxYAxis.setSelectedItemIndex(0);
+    xyPadBoxYAxis.onChange = [this] { changeYAxis(); };
     xyPadBoxYAxis.setJustificationType(juce::Justification::centred);
     xyPadBoxYAxisLabel.attachToComponent(&xyPadBoxYAxis, false);
     xyPadBoxYAxisLabel.setFont(14.f);
@@ -305,6 +322,10 @@ ProjectFourSynthAudioProcessorEditor::~ProjectFourSynthAudioProcessorEditor()
 {
 }
 
+
+
+
+
 //==============================================================================
 void ProjectFourSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
@@ -362,16 +383,426 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     // Filter Components
     auto filterStartPoint = 80 * x;
     auto filterSection = 20 * x;
-    filterTypeBox.setBounds(filterStartPoint + x, 64 * y, filterSection - 2 * x, 3.5 * y);
-    filterFcSlider.setBounds(filterStartPoint , 71*y, filterSection/2 , 15*y);
-    filterQSlider.setBounds(filterStartPoint + filterSection/2 , 71*y, filterSection/2 , 15*y);
+    filterTypeBox.setBounds(filterStartPoint + x, 73 * y, filterSection - 2 * x, 3.5 * y);
+    filterFcSlider.setBounds(filterStartPoint , 81*y, filterSection/2 , 15*y);
+    filterQSlider.setBounds(filterStartPoint + filterSection/2 , 81*y, filterSection/2 , 15*y);
     
     
     // XY Pad
     auto xyPadStartPoint = 80 * x;
     auto xyPadSection = 20 * x;
-    xyPad.setBounds(xyPadStartPoint, 17.5*y , xyPadSection - x, 40*y);
-    xyPadBoxXAxis.setBounds(xyPadStartPoint, 12.5*y, xyPadSection/2 - x, 3*y);
-    xyPadBoxYAxis.setBounds(xyPadStartPoint + xyPadSection/2, 12.5*y, xyPadSection/2 - x, 3*y);
+    xyPadBoxXAxis.setBounds(xyPadStartPoint, 20*y, xyPadSection/2 - x, 3*y);
+    xyPadBoxYAxis.setBounds(xyPadStartPoint + xyPadSection/2, 20*y, xyPadSection/2 - x, 3*y);
+    xyPad.setBounds(xyPadStartPoint - x, 25.0*y , xyPadSection, 44*y);
+    
     presetPanel.setBounds(getLocalBounds().removeFromTop(proportionOfHeight(0.06f)));
+}
+
+
+void ProjectFourSynthAudioProcessorEditor::changeXAxis()
+{
+    const auto selectedIndex = xyPadBoxXAxis.getSelectedId();
+    if (selectedIndex == 1)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+    }
+    else if (selectedIndex == 2)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &oscillatorGains[0];
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 3)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &oscillatorGains[1];
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 4)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &oscillatorGains[2];
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 5)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &oscillatorGains[3];
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 6)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &oscillatorPitchShiftSliders[0];
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 7)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &oscillatorPitchShiftSliders[1];
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 8)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &oscillatorPitchShiftSliders[2];
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 9)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &oscillatorPitchShiftSliders[3];
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 10)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &attackTimeSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 11)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &decayTimeSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 12)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &releaseTimeSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 13)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &sustainLevelSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 14)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &lfoRateSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 15)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &feedbackSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 16)
+    {
+        if(activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &intensitySlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 17)
+    {
+        if (activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &driveSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 18)
+    {
+        if (activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &mixPctSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 19)
+    {
+        if (activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &filterFcSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+    else if (selectedIndex == 20)
+    {
+        if (activeXAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeXAxisSlider);
+            activeXAxisSlider = NULL;
+        }
+        activeXAxisSlider = &filterQSlider;
+        xyPad.registerSlider(activeXAxisSlider, GUI::XyPad::Axis::X);
+    }
+}
+
+
+void ProjectFourSynthAudioProcessorEditor::changeYAxis()
+{
+    const auto selectedIndex = xyPadBoxYAxis.getSelectedId();
+    if (selectedIndex == 1)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+    }
+    else if (selectedIndex == 2)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &oscillatorGains[0];
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 3)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &oscillatorGains[1];
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 4)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &oscillatorGains[2];
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 5)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &oscillatorGains[3];
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 6)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &oscillatorPitchShiftSliders[0];
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 7)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &oscillatorPitchShiftSliders[1];
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 8)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &oscillatorPitchShiftSliders[2];
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 9)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &oscillatorPitchShiftSliders[3];
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 10)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &attackTimeSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 11)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &decayTimeSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 12)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &releaseTimeSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 13)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &sustainLevelSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 14)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &lfoRateSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 15)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &feedbackSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 16)
+    {
+        if(activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &intensitySlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 17)
+    {
+        if (activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &driveSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 18)
+    {
+        if (activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &mixPctSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 19)
+    {
+        if (activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &filterFcSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    else if (selectedIndex == 20)
+    {
+        if (activeYAxisSlider != NULL)
+        {
+            xyPad.deregisterSlider(activeYAxisSlider);
+            activeYAxisSlider = NULL;
+        }
+        activeYAxisSlider = &filterQSlider;
+        xyPad.registerSlider(activeYAxisSlider, GUI::XyPad::Axis::Y);
+    }
+    
 }
