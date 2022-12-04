@@ -40,6 +40,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
         waveChoices[i].addItem("Sawtooth", 2);
         waveChoices[i].addItem("Triangle", 3);
         waveChoices[i].addItem("Square", 4);
+        waveChoices[i].addItem("White Noise", 5);
         waveChoices[i].setJustificationType(juce::Justification::centred);
         addAndMakeVisible(waveChoices[i]);
     }

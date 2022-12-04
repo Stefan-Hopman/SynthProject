@@ -14,7 +14,7 @@
 
 enum class WaveType
 {
-    Sine,Sawtooth,Triangle,Square
+    Sine,Sawtooth,Triangle,Square,WhiteNoise
 };
 
 struct WavetableSynth_Parameters
@@ -92,8 +92,10 @@ private:
     std::vector<float> generateSawtoothWaveTable();
     // generates samples of a triangle wave period.
     std::vector<float> generateTriangularWaveTable();
-    // generates asmples of a square wave period.
+    // generates samples of a square wave period.
     std::vector<float> generateSquareWaveTable();
+    // generates samples of a white noise period
+    std::vector<float> generateWhiteNoiseWaveTable();
     // keeps track of the number of active MIDI note numbers
     std::vector<int> activeOscillatorIds;
     

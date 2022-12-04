@@ -9,13 +9,14 @@
 */
 
 #include "WavetableSynth.h"
-
+#define ARC4RANDOMMAX 4294967295 // (2^32 - 1)
 
 std::vector<float> WavetableSynth::generateSineWaveTable()
 {
     const float PI = std::atanf(1.f) * 4.f; // PI 3.14 variable
     // The length of the sinewave table
     std::vector<float> sineWaveTable = std::vector<float>(_WaveTableLength);
+    
     for (auto i = 0; i < _WaveTableLength; ++i)
     {
         sineWaveTable[i] = std::sinf(2 * PI * static_cast<float>(i) / _WaveTableLength);
@@ -89,6 +90,20 @@ std::vector<float> WavetableSynth::generateSquareWaveTable()
     return squareWaveTable;
 }
 
+std::vector<float> WavetableSynth::generateWhiteNoiseWaveTable()
+{
+    std::vector<float> whiteNoiseTable = std::vector<float>(_WaveTableLength);
+    for (int i = 0; i < _WaveTableLength; i++)
+    {
+        // fNoise is 0 -> ARC4RANDOMMAX
+        float fNoise = (float)arc4random();
+      // normalize and make bipolar
+        fNoise = 2.0*(fNoise/ARC4RANDOMMAX) - 1.0;
+        whiteNoiseTable[i] = fNoise;
+    }
+    return whiteNoiseTable;
+    
+}
 
 
 void WavetableSynth::initializeOscillators()
@@ -103,10 +118,12 @@ void WavetableSynth::initializeOscillators()
     const auto sawtoothWaveTable = generateSawtoothWaveTable();
     const auto triangleWaveTable = generateTriangularWaveTable();
     const auto squareWaveTable = generateSquareWaveTable();
+    const auto whiteNoiseTable = generateWhiteNoiseWaveTable();
     waveTables.push_back(sineWaveTable);
     waveTables.push_back(sawtoothWaveTable);
     waveTables.push_back(triangleWaveTable);
     waveTables.push_back(squareWaveTable);
+    waveTables.push_back(whiteNoiseTable);
     // initiliaze the oscillators
     for (auto i = 0; i < OSCILLATOR_COUNT; ++i)
     {
