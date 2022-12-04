@@ -105,10 +105,14 @@ private:
     void updateOscillators(WaveType wave);
     // updatate all 128 on a new envelope
     void updateOscillatorEnvelopes();
+    // updatate all 128 on a new envelope with a new sustain level
+    void updateOscillatorEnvelopes(const float &sustainLevel);
     
     // Smoothing Parameters
-    float _smoothingTimeMs = 1000.f;
+    float _smoothingTimeMs = 100.f;
     float _linearIncrementOscVolume = 0.f;
     float _s_OscVol = 0.f;
+    float _linearIncrementSustain = 0.f;
+    float _s_Sustain = 1.f;
 };
 

@@ -157,10 +157,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
 {
     
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator One Gain", "Oscillator One Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Gain", "Oscillator Two Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Three Gain", "Oscillator Three Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Four Gain", "Oscillator Four Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator One Gain", "Oscillator One Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Gain", "Oscillator Two Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Three Gain", "Oscillator Three Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Four Gain", "Oscillator Four Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
     layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator One On", "Oscillator One On", false));
     layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator Two On", "Oscillator Two On", false));
     layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator Three On", "Oscillator Three On", false));
@@ -173,19 +173,19 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Two", "Wave Type Oscillator Two", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Three", "Wave Type Oscillator Three", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Four", "Wave Type Oscillator Four", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Attack Time", "Attack", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Decay Time", "Decay Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Sustain Level", "Sustain Level", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 1.0f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Release Time", "Release Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.f), 0.1f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("LFO Rate", "LFO Rate", juce::NormalisableRange<float>(0.1f, 20.f, 0.1f, 1.f), 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Attack Time", "Attack", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 0.7f), 0.1f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Decay Time", "Decay Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 0.7f), 0.1f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Sustain Level", "Sustain Level", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.0f), 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Release Time", "Release Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 0.7f), 0.1f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("LFO Rate", "LFO Rate", juce::NormalisableRange<float>(0.1f, 20.f, 0.1f, 0.65f), 1.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Intensity", "Intensity", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Feedback", "Feedback", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
     layout.add(std::make_unique<juce::AudioParameterChoice>("Modulation Type", "Modulation Type", juce::StringArray {"None", "Chorus", "Flanger", "Vibrato"}, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("Distorsion Type", "Distorsion Type", juce::StringArray {"None", "Hyperbolic Tangent", "Arc Tangent", "Fuzz"}, 0));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Drive", "Drive", juce::NormalisableRange<float>(0.0f, 50.f, 0.5f, 1.f), 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Drive", "Drive", juce::NormalisableRange<float>(1.0f, 50.f, 0.5f, 1.f), 1.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("MixPct", "MixPcy", juce::NormalisableRange<float>(0.0f, 100.f, 1.f, 1.f), 50.0f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Q Value", "Q Value", juce::NormalisableRange<float>(0.1f, 9.8f, 0.1, 1.f), 0.71f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Cross Over Frequency", "Cross Over Frequency", juce::NormalisableRange<float>(10.f, 20000.f, 10.f, 1.f), 1000.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Q Value", "Q Value", juce::NormalisableRange<float>(0.1f, 9.8f, 0.1, 0.45f), 0.71f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Cross Over Frequency", "Cross Over Frequency", juce::NormalisableRange<float>(10.f, 20000.f, 1.f, 0.33f), 1000.f));
     
     layout.add(std::make_unique<juce::AudioParameterChoice>("Filter Types", "Filter Types", juce::StringArray {"None", "LPF2", "LPF4", "HPF2", "HPF4", "BPF2", "BPF4"}, 0));
     return layout;
@@ -202,6 +202,7 @@ void ProjectFourSynthAudioProcessor::prepareToPlay (double sampleRate, int sampl
     modulationFx.reset(sampleRate);
     synthFilter.setSampleRate(static_cast<float>(sampleRate));
     synthFilter.reset();
+    distorsionFx.reset(sampleRate);
     
 }
 

@@ -55,10 +55,22 @@ public:
     ~Distorsion() {}
     // process an audio sample
     float processAudioSample(const float& xn);
+    // reset the plugin
+    void reset(const float& sampleRate);
     // set parameters of the effect
     void setParameters(const Distorsion_Parameters& params);
+    // calculate the parameters
+    void calculateSmoothingCoeffs();
     Distorsion_Parameters getParametes();
+    // apply smoothing
+    float applySmoothing(float& val, float& state, const float& linInc);
 private:
+    float _sampleRate = 44100.f;
+    float _linIncDrive = 0.f;
+    float _linIncMixPct = 0.f;
+    float _s_Drive = 1.f;
+    float _s_MixPct = 1.f;
+    float _smoothingTimeMs = 200.f;
     Distorsion_Parameters _params;
 };
 

@@ -57,9 +57,7 @@ void AdditiveWavetableSynth::prepareToPlay(double& sampleRate)
     for (int i = 0; i < _synthCount; i++)
     {
         _synths[i].prepareToPlay(sampleRate);
-    }
-    
-    
+    } 
 }
 
 void AdditiveWavetableSynth::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)

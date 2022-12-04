@@ -125,6 +125,7 @@ public:
     void setSampleRate(const float& sampleRate);
     // calculate the coefficients of the filter
     void calculateCoefficients();
+    void calculateCoefficients(const float& realTimeFc, const float& realTimeQ);
     // set parameters of the filter
     void setParameters(const BiquadTempalteFilterParamters& params);
     // returns the parameters of the filter
@@ -148,11 +149,23 @@ public:
     }
     // reset biquad chains
     void resetBiquadChains(const int biquadChainCount);
+    
+    // smoothing coefficients
+    void calculateSmoothingCoeffs();
+    // apply smoothing
+    float applySmoothing(float& val, float& state, const float& linInc);
 private:
     BiquadTempalteFilterParamters _params;
     std::vector<BiquadDesign> _biquadChains;
     float _sampleRate = 44100.f;
     int _biquadChainCount = 0;
+    // Smoothing Parameters
+    float _smoothingTimeMs = 100.f;
+    float _linearIncrementFc = 0.f;
+    float _linearIncrementQ = 0.f;
+    float _s_Fc = 1000.f;
+    float _s_Q = 0.71;
+    bool smoothingEnabled = true;
 };
 
 class FourthOrderHighPassButterworth

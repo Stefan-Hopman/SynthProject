@@ -141,6 +141,22 @@ void WavetableSynth::updateOscillatorEnvelopes()
     }
 }
 
+// updatate all 128 on a new envelope with a new sustain level
+void WavetableSynth::updateOscillatorEnvelopes(const float& sustainLevel)
+{
+    constexpr auto OSCILLATOR_COUNT = 128;
+    Stefan::ADSR::Parameters adsrParams;
+    adsrParams.attack = _params.attackTime;
+    adsrParams.decay = _params.decayTime;
+    adsrParams.release = _params.releaseTime;
+    adsrParams.sustain = sustainLevel;
+    for (auto i = 0; i < OSCILLATOR_COUNT; ++i)
+    {
+        _oscillators[i].setADSR(adsrParams);
+    }
+    
+}
+
 
 void WavetableSynth::prepareToPlay(double &sampleRate)
 {
@@ -240,6 +256,7 @@ void WavetableSynth::setParameters(const WavetableSynth_Parameters& params)
 void WavetableSynth::calculateSmoothingCoeffs()
 {
     _linearIncrementOscVolume = (0.f - (-60.f)) / (_smoothingTimeMs * 0.001f * _sampleRate);
+    _linearIncrementSustain = (1.f - (0.f)) / (_smoothingTimeMs * 0.001f * _sampleRate);
 }
 
 float WavetableSynth::midiNoteNumberToFrequency(const int midiNoteNumber)
@@ -268,6 +285,11 @@ void WavetableSynth::render(juce::AudioBuffer<float>& buffer, const int& beginSa
                 for(int i = beginSample; i < endSample; i++)
                 {
                     float realTimeGain = powf(10.f, applySmoothing(_params.gain, _s_OscVol, _linearIncrementOscVolume)/ 20.f);
+                    float realTimeSustainLevel = applySmoothing(_params.sustainLevel, _s_Sustain, _linearIncrementSustain);
+                    if(realTimeSustainLevel != _params.sustainLevel)
+                    {
+                        updateOscillatorEnvelopes(realTimeSustainLevel);
+                    }
                     buffer.setSample(0, i, buffer.getSample(0, i) + (realTimeGain * onGain * oscillator.applyADSR(oscillator.getSample())));
                 }
             }

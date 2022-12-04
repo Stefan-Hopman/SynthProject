@@ -87,6 +87,7 @@ void BiquadTemplateFilter::reset()
     {
         _biquadChains[i].reset();
     }
+    
 }
 
 
@@ -228,10 +229,152 @@ void BiquadTemplateFilter::calculateCoefficients()
     }
 }
 
+void BiquadTemplateFilter::calculateCoefficients(const float& realTimeFc, const float& realTimeQ)
+{
+    if (_params.filterType == BiquadFilterType::HPF2)
+    {
+        float theta_c = 2.f * static_cast<float>(kPi) * realTimeFc / _sampleRate;
+        float d = 1.f / realTimeQ;
+        float betaNumerator = 1.f - ((d / 2.f) * (std::sinf(theta_c)));
+        float betaDenominator = 1.f + ((d / 2.f) * (std::sinf(theta_c)));
+        float beta = 0.5f * (betaNumerator / betaDenominator);
+        float gamma = (0.5f + beta) * (std::cosf(theta_c));
+        float alpha = (0.5f + beta + gamma) / 2.f;
+        
+        float b0 = alpha;
+        float b1 = -2.f * alpha;
+        float b2 = alpha;
+        float a1 = -2.f * gamma;
+        float a2 = 2.f * beta;
+        
+        int biquadChainCount = 1;
+        resetBiquadChains(biquadChainCount);
+        for(int i = 0; i < _biquadChains.size(); i++)
+        {
+            _biquadChains[i].setCoeffs(b0, b1, b2, a1, a2);
+        }
+        return;
+    }
+    else if (_params.filterType == BiquadFilterType::HPF4)
+    {
+        float theta_c = 2.f * static_cast<float>(kPi) * realTimeFc / _sampleRate;
+        float d = 1.f / realTimeQ;
+        float betaNumerator = 1.f - ((d / 2.f) * (std::sinf(theta_c)));
+        float betaDenominator = 1.f + ((d / 2.f) * (std::sinf(theta_c)));
+        float beta = 0.5f * (betaNumerator / betaDenominator);
+        float gamma = (0.5f + beta) * (std::cosf(theta_c));
+        float alpha = (0.5f + beta + gamma) / 2.f;
+        
+        float b0 = alpha;
+        float b1 = -2.f * alpha;
+        float b2 = alpha;
+        float a1 = -2.f * gamma;
+        float a2 = 2.f * beta;
+        
+        int biquadChainCount = 2;
+        resetBiquadChains(biquadChainCount);
+        for(int i = 0; i < _biquadChains.size(); i++)
+        {
+            _biquadChains[i].setCoeffs(b0, b1, b2, a1, a2);
+        }
+        return;
+    }
+    else if (_params.filterType == BiquadFilterType::LPF2)
+    {
+        float theta_c = 2.f * static_cast<float>(kPi) * realTimeFc / _sampleRate;
+        float d = 1.f / realTimeQ;
+        float betaNumerator = 1.f - ((d / 2.f) * (std::sinf(theta_c)));
+        float betaDenominator = 1.f + ((d / 2.f) * (std::sinf(theta_c)));
+        
+        float beta = 0.5f * (betaNumerator / betaDenominator);
+        float gamma = (0.5f + beta) * (std::cosf(theta_c));
+        float alpha = (0.5f + beta - gamma) / 2.f;
+        
+        float b0 = alpha;
+        float b1 = 2.f * alpha;
+        float b2 = alpha;
+        float a1 = -2.f * gamma;
+        float a2 = 2.f * beta;
+        
+        int biquadChainCount = 1;
+        resetBiquadChains(biquadChainCount);
+        for(int i = 0; i < _biquadChains.size(); i++)
+        {
+            _biquadChains[i].setCoeffs(b0, b1, b2, a1, a2);
+        }
+        return;
+    }
+    else if (_params.filterType == BiquadFilterType::LPF4)
+    {
+        float theta_c = 2.f * static_cast<float>(kPi) * realTimeFc / _sampleRate;
+        float d = 1.f / realTimeQ;
+        float betaNumerator = 1.f - ((d / 2.f) * (std::sinf(theta_c)));
+        float betaDenominator = 1.f + ((d / 2.f) * (std::sinf(theta_c)));
+        
+        float beta = 0.5f * (betaNumerator / betaDenominator);
+        float gamma = (0.5f + beta) * (std::cosf(theta_c));
+        float alpha = (0.5f + beta - gamma) / 2.f;
+        
+        float b0 = alpha;
+        float b1 = 2.f * alpha;
+        float b2 = alpha;
+        float a1 = -2.f * gamma;
+        float a2 = 2.f * beta;
+        
+        int biquadChainCount = 1;
+        resetBiquadChains(biquadChainCount);
+        for(int i = 0; i < _biquadChains.size(); i++)
+        {
+            _biquadChains[i].setCoeffs(b0, b1, b2, a1, a2);
+        }
+        return;
+    }
+    else if (_params.filterType == BiquadFilterType::BPF2)
+    {
+        float K = std::tanf(static_cast<float>(kPi) * realTimeFc / _sampleRate);
+        float delta = K * K * realTimeQ + K + realTimeQ;
+        float b0 = K / delta;
+        float b1 = 0.f;
+        float b2 = -1.f * K / delta;
+        float a1 = 2.f * realTimeQ * (K * K - 1.f) / delta;
+        float a2 = (K * K * realTimeQ - K + realTimeQ) / delta;
+        
+        int biquadChainCount = 1;
+        resetBiquadChains(biquadChainCount);
+        for(int i = 0; i < _biquadChains.size(); i++)
+        {
+            _biquadChains[i].setCoeffs(b0, b1, b2, a1, a2);
+        }
+        return;
+    }
+    else if (_params.filterType == BiquadFilterType::BPF4)
+    {
+        float K = std::tanf(static_cast<float>(kPi) * realTimeFc / _sampleRate);
+        float delta = K * K * realTimeQ + K + realTimeQ;
+        float b0 = K / delta;
+        float b1 = 0.f;
+        float b2 = -1.f * K / delta;
+        float a1 = 2.f * realTimeQ * (K * K - 1.f) / delta;
+        float a2 = (K * K * realTimeQ - K + realTimeQ) / delta;
+        
+        int biquadChainCount = 2;
+        resetBiquadChains(biquadChainCount);
+        for(int i = 0; i < _biquadChains.size(); i++)
+        {
+            _biquadChains[i].setCoeffs(b0, b1, b2, a1, a2);
+        }
+        return;
+    }
+    
+}
+
+
 void BiquadTemplateFilter::setSampleRate(const float& sampleRate)
 {
     _sampleRate = sampleRate;
     calculateCoefficients();
+    calculateSmoothingCoeffs();
+    
 }
 
 void BiquadTemplateFilter::resetBiquadChains(const int biquadChainCount)
@@ -261,18 +404,64 @@ void BiquadTemplateFilter::setParameters(const BiquadTempalteFilterParamters& pa
     if(_params.Q != params.Q || _params.crossOverFrequency != params.crossOverFrequency || _params.filterType != params.filterType)
     {
         _params = params;
-        calculateCoefficients();
+        //calculateCoefficients();
     }
+    
 }
 
 float BiquadTemplateFilter::processAudioSample(const float& xn)
 {
     float yn = xn;
+    if (smoothingEnabled == true)
+    {
+        float realTimeFc = applySmoothing(_params.crossOverFrequency, _s_Fc, _linearIncrementFc);
+        float realTimeQ = applySmoothing(_params.Q, _s_Q, _linearIncrementQ);
+        if (realTimeFc != _params.crossOverFrequency || realTimeQ != _params.Q)
+        {
+            calculateCoefficients();
+        }
+        
+    }
+    
     for(int i = 0; i < _biquadChains.size(); i++)
     {
         yn = _biquadChains[i].processAudioSample(yn);
     }
     return yn;
+}
+
+void BiquadTemplateFilter::calculateSmoothingCoeffs()
+{
+    _linearIncrementFc = (20000.f - (10.f)) / (_smoothingTimeMs * 0.001f * _sampleRate);
+    _linearIncrementQ = (9.8f - (0.1f)) / (_smoothingTimeMs * 0.001f * _sampleRate);
+}
+
+float BiquadTemplateFilter::applySmoothing(float& val, float& state, const float& linInc)
+{
+    if(val > state)
+    {
+        state = state + linInc;
+        if (state > val)
+        {
+            state = val;
+        }
+    }
+    else if (val < state)
+    {
+        state = state - linInc;
+        if (state < val)
+        {
+            state = val;
+        }
+    }
+    if (val == state)
+    {
+        return val;
+    }
+    else
+    {
+        return state;
+    }
 }
 
 
@@ -282,6 +471,7 @@ void FourthOrderHighPassButterworth::reset()
 {
     _biquadChainOne.reset();
     _biquadChainTwo.reset();
+    
 }
 
 void FourthOrderHighPassButterworth::setCrossOverFrequency(const float& crossOverFrequency)
@@ -394,3 +584,5 @@ void FourthOrderBandPassFilter::setSampleRate(const float& sampleRate)
     reset();
     calculateCoefficients();
 }
+
+

@@ -66,8 +66,7 @@ public:
     {
         return _params;
     }
-    // calculate the smoothing coeffiecnts for linear increments
-    void calculateSmoothingCoeffs();
+   
 private:
     
     AdditiveWavetableSynth_Parameters _params;
@@ -76,5 +75,4 @@ private:
     std::vector<WavetableSynth> _synths;
    
     
-    //_linInc = (0.f - (-60.f)) / (_smoothingTimeMs * 0.001f * _sampleRate);
 };

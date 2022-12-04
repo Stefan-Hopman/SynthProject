@@ -33,6 +33,7 @@ public:
     
 
 private:
+    
     float _linInc = 0.f;
     float _sampleRate = 44100.f;
     float _s_One = 0.f;
