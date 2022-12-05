@@ -81,7 +81,8 @@ namespace GUI
         const auto thumbX = thumb.getX() + r;
         const auto thumbY = thumb.getY() + r;
 
-        g.setColour(juce::Colours::violet);
+        juce::Colour orange(255, 156, 0);
+        g.setColour(orange);
         g.drawLine(juce::Line<float> { {0.f, thumbY}, { bounds.getWidth(), thumbY } });
 
         g.setColour(juce::Colours::cyan);

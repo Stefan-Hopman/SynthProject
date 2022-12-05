@@ -107,11 +107,13 @@ public:
     float processAudioSample(float sample, int channel)
     {
         wetOut = 0;
+        float dryOut = sample;
         
         // all-pass filtering
         for (int i = 0; i<APFs_PER_CHANNEL; i++)
             sample = allPass[i][channel].processAudioSample(sample, 0.7*densityAmount); //density controls fb coeff for APF's
         
+        sample = dryOut + sample*densityAmount;
         
         for (int delayLine = 0; delayLine < DELAY_LINES_PER_CHANNEL; delayLine++)
         {

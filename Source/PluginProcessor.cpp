@@ -307,11 +307,14 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
     {
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
+            
+           
             // Reverb Parameters
             reverbFx.setParameters(apvts.getRawParameterValue ("delay")->load(),
                                    apvts.getRawParameterValue ("density")->load()/100,
                                    apvts.getRawParameterValue ("wet")->load(),
                                    apvts.getRawParameterValue ("algorithm")->load());
+            
             buffer.setSample(0, i, reverbFx.processAudioSample(buffer.getSample(0, i), 0));
         }
     }

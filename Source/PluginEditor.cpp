@@ -198,9 +198,10 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     wetMixSlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     wetMixSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 60, 20);
     wetMixLabel.attachToComponent(&wetMixSlider, false);
-    wetMixLabel.setText("Wet Mix %", juce::dontSendNotification);
+    wetMixLabel.setText("Wet Mix", juce::dontSendNotification);
     wetMixLabel.setFont(16.f);
     wetMixLabel.setJustificationType(juce::Justification::centred);
+    wetMixSlider.setTextValueSuffix(" dB");
     addAndMakeVisible(wetMixSlider);
     delaySlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     delaySlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 60, 20);
@@ -208,6 +209,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     delayLabel.setText("Size", juce::dontSendNotification);
     delayLabel.setFont(16.f);
     delayLabel.setJustificationType(juce::Justification::centred);
+    delaySlider.setTextValueSuffix(" ms");
     addAndMakeVisible(delaySlider);
     densitySlider.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     densitySlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 60, 20);
@@ -215,6 +217,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     densityLabel.setText("Density", juce::dontSendNotification);
     densityLabel.setFont(16.f);
     densityLabel.setJustificationType(juce::Justification::centred);
+    densitySlider.setTextValueSuffix(" %");
     addAndMakeVisible(densitySlider);
     reverbActive.setButtonText("Active");
     addAndMakeVisible(reverbActive);
@@ -315,7 +318,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     juce::Colour neonDarkPurple(61,20,76);
     juce::Colour pink(245,39,137);
     juce::Colour orange(255, 156, 0);
-    juce::Colour teal(0, 100, 100);
+    juce::Colour teal(0, 115, 115);
     getLookAndFeel().setColour(juce::Slider::thumbColourId, orange);
     getLookAndFeel().setColour(juce::Slider::trackColourId, orange);
     getLookAndFeel().setColour(juce::Slider::backgroundColourId , teal);
@@ -326,7 +329,13 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     getLookAndFeel().setColour(juce::Slider::rotarySliderFillColourId, orange);
     juce::Colour darkWhite(232, 225, 227);
     getLookAndFeel().setColour(juce::Label::textColourId, darkWhite);
-    getLookAndFeel().setColour(juce::TextButton::buttonColourId, juce::Colours::black.brighter(0.2f));
+    getLookAndFeel().setColour(juce::ToggleButton::textColourId, darkWhite);
+    getLookAndFeel().setColour(juce::Slider::textBoxTextColourId, darkWhite);
+    getLookAndFeel().setColour(juce::ComboBox::textColourId, darkWhite);
+    getLookAndFeel().setColour(juce::PopupMenu::backgroundColourId, teal);
+    getLookAndFeel().setColour(juce::PopupMenu::textColourId, darkWhite);
+    
+    //getLookAndFeel().setColour(juce::TextButton::buttonColourId, juce::Colours::black.brighter(0.2f));
     
     // Attachments
     oscillatorOneGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Oscillator One Gain", oscillatorGains[0]);
@@ -398,26 +407,20 @@ void ProjectFourSynthAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour(juce::Colour::fromHSV (tealHue, 0.65f, 0.9f, 1.0f));
     auto x = getWidth()/100;
     auto y = getHeight()/100;
-    //g.drawLine(0, 50*y, 50*x, 50*y);
-    
-    
-    /*
-     auto orangeHue = juce::Colours::orange.getHue();
-     auto goldHue = juce::Colours::gold.getHue();
-     
-     g.setColour(juce::Colour::fromHSV (orangeHue, 0.65f, 0.9f, 1.0f));
-     g.drawLine(delayLabel.getX()+delayLabel.getWidth(), 29, delayLabel.getX()+delayLabel.getWidth(), getHeight()-24, 3);
-     
-     g.setColour(juce::Colour::fromHSV (goldHue, 1.f, 1.0f, 1.0f));
-     g.drawLine(modFreqLabel.getX()+modFreqLabel.getWidth(), 29, modFreqLabel.getX()+modFreqLabel.getWidth(), getHeight()-24, 3);
-     
- //    g.setColour(juce::Colour::fromHSV (goldHue, 1.0f, 1.0f, 1.0f));
-     g.drawLine((delayLabel.getX()+delayLabel.getWidth())*3, 29, (delayLabel.getX()+delayLabel.getWidth())*3, getHeight()-24, 3);
-     
-     g.setColour(juce::Colour::fromHSV (orangeHue, 0.65f, 0.9f, 1.0f));
-     g.drawLine(hpfLabel.getX()+delayLabel.getWidth(), 29, hpfLabel.getX()+hpfLabel.getWidth(), getHeight()-24, 3);
-     
-     */
+    g.setColour(juce::Colours::teal);
+   
+    g.drawRect(0, 15*y, 80.5*x, 43.5*y, 3);
+    g.drawRect(0, 15*y, 104.2*x, 95.4*y, 3);
+    g.drawRect(0, 15*y, 20.25*x, 43.5*y, 3);
+    g.drawRect(0, 15*y, 40.25*x, 43.5*y, 3);
+    g.drawRect(0, 15*y, 60.25*x, 43.5*y, 3);
+    g.drawRect(0, 15*y, 80.5*x, 92*y, 3);
+    g.drawRect(0, 15*y, 20.25*x, 92*y, 3);
+    g.drawRect(0, 15*y, 40.25*x, 92*y, 3);
+    g.drawLine(56.5*x, 58*y, 56.5*x, 125 *y, 3);
+    g.drawRect(0, 15*y, 80.5*x, 92*y, 3);
+    g.drawRect(80.25*x, 68*y, 24*x, 39*y, 3);
+
 }
 
 void ProjectFourSynthAudioProcessorEditor::resized()
@@ -432,11 +435,11 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     auto oscillatorSection = (oscillatorsEndPoint - oscillatorsStartPoint) / 4;
     for(int i = 0; i < 4; i++)
     {
-        oscillatorLabels[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 2*x, 16.5*y, oscillatorSection/2 - 2*x, 3*y);
-        oscillatorActives[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + oscillatorSection/2, 16.5*y, oscillatorSection/2, 3*y);
-        waveChoices[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 5*x, 21*y, oscillatorSection - 10*x, 3*y);
-        oscillatorGains[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 1.5*x, 29*y, oscillatorSection - 3*x, 6*y);
-        oscillatorPitchShiftSliders[i].setBounds(oscillatorsStartPoint + oscillatorSection*i, 40*y, oscillatorSection, 14 *y);
+        oscillatorLabels[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 2*x, 17.5*y, oscillatorSection/2 - 2*x, 3*y);
+        oscillatorActives[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + oscillatorSection/2, 17.5*y, oscillatorSection/2, 3*y);
+        waveChoices[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 5*x, 22*y, oscillatorSection - 10*x, 3*y);
+        oscillatorGains[i].setBounds(oscillatorsStartPoint + oscillatorSection*i + 1.5*x, 30*y, oscillatorSection - 3*x, 6*y);
+        oscillatorPitchShiftSliders[i].setBounds(oscillatorsStartPoint + oscillatorSection*i, 41*y, oscillatorSection, 14 *y);
     }
     
     auto adsrStartPoint = 0 * x;
@@ -460,26 +463,26 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     // Distorsion Components
     auto distorsionStartPoint = 40 *x;
     auto distorsionSection = 15 * x;
-    distorsionTypeBox.setBounds(distorsionStartPoint + 2 * x, 64 * y, distorsionSection - 4 * x, 4*y);
-    driveSlider.setBounds(distorsionStartPoint , 72.5*y, distorsionSection/2 , 25*y);
-    mixPctSlider.setBounds(distorsionStartPoint  + distorsionSection/2, 72.5*y, distorsionSection/2 , 25*y);
+    distorsionTypeBox.setBounds(distorsionStartPoint + 2.75 * x, 64 * y, distorsionSection - 4 * x, 4*y);
+    driveSlider.setBounds(distorsionStartPoint + 0.75*x , 72.5*y, distorsionSection/2 , 25*y);
+    mixPctSlider.setBounds(distorsionStartPoint  + distorsionSection/2 + 0.75*x, 72.5*y, distorsionSection/2 , 25*y);
     
     auto reverbStartPoint = 55 * x;
     auto reverbSection  = 25 * x;
     
     
-    reverbLabel.setBounds(reverbStartPoint+ 5.5 *x , 60*y, reverbSection/2 - 5*x, 3*y);
-    reverbActive.setBounds(reverbStartPoint + reverbSection/2, 60*y, reverbSection/2, 3*y);
-    reverbTypeBox.setBounds(reverbStartPoint + 5 *x, 67.5*y, reverbSection - 10*x, 4*y);
-    densitySlider.setBounds(reverbStartPoint + 5 *x, 76*y, reverbSection - 10*x, 15*y);
-    delaySlider.setBounds(reverbStartPoint, 88.5*y, reverbSection/2, 15*y);
-    wetMixSlider.setBounds(reverbStartPoint + reverbSection/2, 88.5*y, reverbSection/2, 15*y);
+    reverbLabel.setBounds(reverbStartPoint+ 6.5 *x , 61*y, reverbSection/2 - 5*x, 3*y);
+    reverbActive.setBounds(reverbStartPoint + reverbSection/2 + x, 61*y, reverbSection/2, 3*y);
+    reverbTypeBox.setBounds(reverbStartPoint + 6 *x, 68.5*y, reverbSection - 10*x, 4*y);
+    densitySlider.setBounds(reverbStartPoint + 6 *x, 77*y, reverbSection - 10*x, 15*y);
+    delaySlider.setBounds(reverbStartPoint + x, 89.5*y, reverbSection/2, 15*y);
+    wetMixSlider.setBounds(reverbStartPoint + reverbSection/2 + x, 89.5*y, reverbSection/2, 15*y);
     
     
     // Filter Components
     auto filterStartPoint = 80 * x;
-    auto filterSection = 20 * x;
-    filterTypeBox.setBounds(filterStartPoint + x, 73 * y, filterSection - 2 * x, 3.5 * y);
+    auto filterSection = 24.2 * x;
+    filterTypeBox.setBounds(filterStartPoint + 7*x, 72.5 * y, filterSection - 14*x, 3.5 * y);
     filterFcSlider.setBounds(filterStartPoint , 81*y, filterSection/2 , 15*y);
     filterQSlider.setBounds(filterStartPoint + filterSection/2 , 81*y, filterSection/2 , 15*y);
     
@@ -487,9 +490,9 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     // XY Pad
     auto xyPadStartPoint = 80 * x;
     auto xyPadSection = 20 * x;
-    xyPadBoxXAxis.setBounds(xyPadStartPoint + 1.5*x, 20*y, xyPadSection/2 - x, 3*y);
-    xyPadBoxYAxis.setBounds(xyPadStartPoint + xyPadSection/2 + 1.5*x, 20*y, xyPadSection/2 - x, 3*y);
-    xyPad.setBounds(xyPadStartPoint+0.5*x, 25.0*y , xyPadSection+2*x, 44*y);
+    xyPadBoxXAxis.setBounds(xyPadStartPoint + 2.25*x, 18.5*y, xyPadSection/2 - x, 3*y);
+    xyPadBoxYAxis.setBounds(xyPadStartPoint + xyPadSection/2 + 2.25*x, 18.5*y, xyPadSection/2 - x, 3*y);
+    xyPad.setBounds(xyPadStartPoint+1.25*x, 23.5*y, xyPadSection+2*x, 43*y);
     
     presetPanel.setBounds(getLocalBounds().removeFromTop(proportionOfHeight(0.06f)));
 }

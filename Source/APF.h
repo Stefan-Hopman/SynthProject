@@ -31,7 +31,7 @@ public:
     
     float processAudioSample(float input, float feedbackAmount)
     {
-        feedForwardSample = input * feedbackAmount;
+        feedForwardSample = input;
         feedbackSample = delayLine.getFeedbackSample() * feedbackAmount * -1;
         return delayLine.processAudioSample(input + feedbackSample) + feedForwardSample;
     }
