@@ -14,6 +14,10 @@
 #include "Distorsion.h"
 #include "Biquad.h"
 #include "PresetManager.h"
+#include "Reverb.h"
+
+#define MAX_DELAY_MS 2000
+#define MAX_DELAY_NOTE 16
 //==============================================================================
 /**
 */
@@ -62,6 +66,7 @@ public:
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
     Service::PresetManager& getPresetManager() {return *presetManager; }
+    void reset() override;
 private:
     //==============================================================================
     void updateParameters();
@@ -69,6 +74,7 @@ private:
     Modulation modulationFx; // effect for different modulations (vibrato, chorus, flanger)
     Distorsion distorsionFx; // effect for different distorsions
     BiquadTemplateFilter synthFilter;
+    Reverb reverbFx; // effect for reverb
     // Audio plugin parameters
     std::unique_ptr<Service::PresetManager> presetManager;
     // smoothing parameters

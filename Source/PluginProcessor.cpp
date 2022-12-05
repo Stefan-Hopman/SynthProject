@@ -150,6 +150,8 @@ void ProjectFourSynthAudioProcessor::updateParameters()
     filterParameters.filterType = static_cast<BiquadFilterType>(apvts.getRawParameterValue("Filter Types")->load());
     synthFilter.setParameters(filterParameters);
     
+    
+    
 }
 
 
@@ -188,6 +190,21 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterFloat>("Cross Over Frequency", "Cross Over Frequency", juce::NormalisableRange<float>(10.f, 20000.f, 1.f, 0.33f), 1000.f));
     
     layout.add(std::make_unique<juce::AudioParameterChoice>("Filter Types", "Filter Types", juce::StringArray {"None", "LPF2", "LPF4", "HPF2", "HPF4", "BPF2", "BPF4"}, 0));
+    
+    // Reverb parameters
+    auto normRangeDelay = juce::NormalisableRange<float>(0,MAX_DELAY_MS);
+    normRangeDelay.setSkewForCentre(500);
+    auto normRangeVolume = juce::NormalisableRange<float>(-120,0);
+    normRangeVolume.setSkewForCentre(-18);
+    
+    juce::StringArray algorithmList = {"Default","Reverse","Sped-up","Slowed"};
+    
+    layout.add(std::make_unique<juce::AudioParameterFloat>("wet", "Wet",  normRangeVolume, -14));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("delay", "Delay",  normRangeDelay, 500));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("density", "Density",  0, 100, 0));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("algorithm", "Algorithm", algorithmList, 0));
+    layout.add(std::make_unique<juce::AudioParameterBool>("Reverb Active", "Reverb Active", false));
+
     return layout;
    
 }
@@ -203,7 +220,16 @@ void ProjectFourSynthAudioProcessor::prepareToPlay (double sampleRate, int sampl
     synthFilter.setSampleRate(static_cast<float>(sampleRate));
     synthFilter.reset();
     distorsionFx.reset(sampleRate);
-    
+    reverbFx.setMaxDelay(sampleRate, MAX_DELAY_MS);
+    float delayValue = apvts.getRawParameterValue ("delay")->load();
+    reverbFx.reset(delayValue);
+}
+
+// gets called whenever starting up the audio again
+void ProjectFourSynthAudioProcessor::reset()
+{
+    float delayValue = apvts.getRawParameterValue ("delay")->load();
+    reverbFx.reset(delayValue);
 }
 
 void ProjectFourSynthAudioProcessor::releaseResources()
@@ -276,6 +302,22 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
     {
         buffer.setSample(0, i, distorsionFx.processAudioSample(buffer.getSample(0, i)));
     }
+    // Apply Reverb Effect
+    if (apvts.getRawParameterValue("Reverb Active")->load() == true)
+    {
+        for (int i = 0; i < buffer.getNumSamples(); i++)
+        {
+            // Reverb Parameters
+            reverbFx.setParameters(apvts.getRawParameterValue ("delay")->load(),
+                                   apvts.getRawParameterValue ("density")->load()/100,
+                                   apvts.getRawParameterValue ("wet")->load(),
+                                   apvts.getRawParameterValue ("algorithm")->load());
+            buffer.setSample(0, i, reverbFx.processAudioSample(buffer.getSample(0, i), 0));
+        }
+    }
+    
+    
+    
     // Apply Filtering
     if (synthFilter.isActive() == true)
     {

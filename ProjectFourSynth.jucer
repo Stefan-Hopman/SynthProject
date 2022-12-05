@@ -39,7 +39,15 @@
         <FILE id="QEvNJF" name="Gain.cpp" compile="1" resource="0" file="Source/Gain.cpp"/>
         <FILE id="hrTFDn" name="Gain.h" compile="0" resource="0" file="Source/Gain.h"/>
       </GROUP>
-      <GROUP id="{44092841-9730-FD9C-2437-8AC08D730FE5}" name="Nathan_Fx"/>
+      <GROUP id="{44092841-9730-FD9C-2437-8AC08D730FE5}" name="Nathan_Fx">
+        <FILE id="QLRWgH" name="APF.h" compile="0" resource="0" file="Source/APF.h"/>
+        <FILE id="OXvSRF" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
+        <FILE id="x9ExXi" name="HPF.h" compile="0" resource="0" file="Source/HPF.h"/>
+        <FILE id="cpw4a7" name="Interpolatorinator.h" compile="0" resource="0"
+              file="Source/Interpolatorinator.h"/>
+        <FILE id="qUAKEt" name="LPF.h" compile="0" resource="0" file="Source/LPF.h"/>
+        <FILE id="OhbSNX" name="Reverb.h" compile="0" resource="0" file="Source/Reverb.h"/>
+      </GROUP>
       <GROUP id="{BEDB3807-7ED0-C3D6-5701-456B213858A9}" name="Synth">
         <FILE id="BnOOsh" name="AdditiveWavetableSynth.cpp" compile="1" resource="0"
               file="Source/AdditiveWavetableSynth.cpp"/>

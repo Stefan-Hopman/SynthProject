@@ -53,6 +53,11 @@ namespace GUI
             nextPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.1f)).reduced(4));
             deletePresetButton.setBounds(bounds.reduced(4));
         }
+        void paint(juce::Graphics& g) override
+        {
+            
+            
+        }
         
     private:
         void buttonClicked(juce::Button* button) override

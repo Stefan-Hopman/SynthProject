@@ -102,6 +102,26 @@ private:
     juce::Label filterFcLabel;
     juce::Slider filterFcSlider;
     
+    // Reverb
+    juce::Label reverbLabel;
+    juce::Label wetMixLabel;
+    juce::Slider wetMixSlider;
+    juce::Label delayLabel;
+    juce::Slider delaySlider;
+    juce::Label densityLabel;
+    juce::Slider densitySlider;
+    juce::ToggleButton reverbActive;
+    juce::Label reverbTypeLabel;
+    juce::ComboBox reverbTypeBox;
+   
+    // Reverb Attachments
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> wetMixSliderAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> delaySliderAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> densitySliderAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> reverbTypeBoxAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> reverbActiveAttachment;
+    
+    
     // XY Pad
     GUI::XyPad xyPad;
     // XY Pad Combo Boxes
