@@ -142,7 +142,7 @@ public:
             wetOut += delays[delayLine][channel].processAudioSample(input);
         }
         
-        return wetOut * wetVolume;
+        return wetOut * wetVolume + dryOut;
     }
     
  

@@ -159,11 +159,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
 {
     
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator One Gain", "Oscillator One Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Gain", "Oscillator Two Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Three Gain", "Oscillator Three Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Four Gain", "Oscillator Four Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
-    layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator One On", "Oscillator One On", false));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator One Gain", "Oscillator One Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -12.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Gain", "Oscillator Two Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -12.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Three Gain", "Oscillator Three Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -12.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Four Gain", "Oscillator Four Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -12.f));
+    layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator One On", "Oscillator One On", true));
     layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator Two On", "Oscillator Two On", false));
     layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator Three On", "Oscillator Three On", false));
     layout.add(std::make_unique<juce::AudioParameterBool>("Oscillator Four On", "Oscillator Four On", false));
@@ -171,10 +171,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Two Pitch Shift", "Oscillator Two Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Three Pitch Shift", "Oscillator Three Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Oscillator Four Pitch Shift", "Oscillator Four Pitch Shift", juce::NormalisableRange<float>(-24.f, 24.f, 1.f, 1.f), 0.f));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator One", "Wave Type Oscillator One", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square", "White Noise"}, 0));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Two", "Wave Type Oscillator Two", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square", "White Noise"}, 0));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Three", "Wave Type Oscillator Three", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square", "White Noise"}, 0));
-    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Four", "Wave Type Oscillator Four", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square", "White Noise"}, 0));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator One", "Wave Type Oscillator One", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Two", "Wave Type Oscillator Two", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Three", "Wave Type Oscillator Three", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
+    layout.add(std::make_unique<juce::AudioParameterChoice>("Wave Type Oscillator Four", "Wave Type Oscillator Four", juce::StringArray {"Sine", "Sawtooth", "Triangle", "Square"}, 0));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Attack Time", "Attack", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 0.7f), 0.1f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Decay Time", "Decay Time", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 0.7f), 0.1f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("Sustain Level", "Sustain Level", juce::NormalisableRange<float>(0.0f, 1.f, 0.01f, 1.0f), 1.0f));
@@ -355,12 +355,25 @@ void ProjectFourSynthAudioProcessor::getStateInformation (juce::MemoryBlock& des
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    // You should use this method to store your parameters in the memory block.
+    // You could do that either as raw data, or use the XML or ValueTree classes
+    // as intermediaries to make it easy to save and load complex data.
+    auto state = apvts.copyState();
+    std::unique_ptr<juce::XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void ProjectFourSynthAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    // You should use this method to restore your parameters from this memory block,
+    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+         
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName (apvts.state.getType()))
+            apvts.replaceState (juce::ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

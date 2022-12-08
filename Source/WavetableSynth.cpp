@@ -118,12 +118,11 @@ void WavetableSynth::initializeOscillators()
     const auto sawtoothWaveTable = generateSawtoothWaveTable();
     const auto triangleWaveTable = generateTriangularWaveTable();
     const auto squareWaveTable = generateSquareWaveTable();
-    const auto whiteNoiseTable = generateWhiteNoiseWaveTable();
+    
     waveTables.push_back(sineWaveTable);
     waveTables.push_back(sawtoothWaveTable);
     waveTables.push_back(triangleWaveTable);
     waveTables.push_back(squareWaveTable);
-    waveTables.push_back(whiteNoiseTable);
     // initiliaze the oscillators
     for (auto i = 0; i < OSCILLATOR_COUNT; ++i)
     {
