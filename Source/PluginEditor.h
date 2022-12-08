@@ -113,6 +113,13 @@ private:
     juce::ToggleButton reverbActive;
     juce::Label reverbTypeLabel;
     juce::ComboBox reverbTypeBox;
+    
+    // Gain
+    juce::Label masterGainLabel;
+    juce::Slider masterGainSlider;
+    // Gain Attachments
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> masterGainSliderAttachment;
+    
    
     // Reverb Attachments
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> wetMixSliderAttachment;

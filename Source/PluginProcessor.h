@@ -15,6 +15,7 @@
 #include "Biquad.h"
 #include "PresetManager.h"
 #include "Reverb.h"
+#include "Gain.h"
 
 #define MAX_DELAY_MS 2000
 #define MAX_DELAY_NOTE 16
@@ -75,6 +76,7 @@ private:
     Distorsion distorsionFx; // effect for different distorsions
     BiquadTemplateFilter synthFilter;
     Reverb reverbFx; // effect for reverb
+    Gain masterGainFx; // effect for the master
     // Audio plugin parameters
     std::unique_ptr<Service::PresetManager> presetManager;
     // smoothing parameters

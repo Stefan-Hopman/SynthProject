@@ -150,7 +150,8 @@ void ProjectFourSynthAudioProcessor::updateParameters()
     filterParameters.filterType = static_cast<BiquadFilterType>(apvts.getRawParameterValue("Filter Types")->load());
     synthFilter.setParameters(filterParameters);
     
-    
+    float gainVal = apvts.getRawParameterValue("Gain")->load();
+    masterGainFx.setGainValue(gainVal);
     
 }
 
@@ -204,6 +205,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     layout.add(std::make_unique<juce::AudioParameterFloat>("density", "Density",  0, 100, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("algorithm", "Algorithm", algorithmList, 0));
     layout.add(std::make_unique<juce::AudioParameterBool>("Reverb Active", "Reverb Active", false));
+    
+    // Gain parameters
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Gain", "Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
 
     return layout;
    
@@ -223,6 +227,8 @@ void ProjectFourSynthAudioProcessor::prepareToPlay (double sampleRate, int sampl
     reverbFx.setMaxDelay(sampleRate, MAX_DELAY_MS);
     float delayValue = apvts.getRawParameterValue ("delay")->load();
     reverbFx.reset(delayValue);
+    masterGainFx.setSampleRate(sampleRate);
+    masterGainFx.reset();
 }
 
 // gets called whenever starting up the audio again
@@ -307,8 +313,6 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
     {
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
-            
-           
             // Reverb Parameters
             reverbFx.setParameters(apvts.getRawParameterValue ("delay")->load(),
                                    apvts.getRawParameterValue ("density")->load()/100,
@@ -319,8 +323,6 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
         }
     }
     
-    
-    
     // Apply Filtering
     if (synthFilter.isActive() == true)
     {
@@ -330,6 +332,12 @@ void ProjectFourSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
         }
         
     }
+    // Apply Gain
+    for (int i = 0; i < buffer.getNumSamples(); i++)
+    {
+        buffer.setSample(0, i, masterGainFx.processAudioSample(buffer.getSample(0, i)));
+    }
+    
     auto* firstChannel = buffer.getWritePointer(0);
     for (int channel = 1; channel < buffer.getNumChannels(); ++channel)
     {
@@ -358,9 +366,7 @@ void ProjectFourSynthAudioProcessor::getStateInformation (juce::MemoryBlock& des
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
-    auto state = apvts.copyState();
-    std::unique_ptr<juce::XmlElement> xml (state.createXml());
-    copyXmlToBinary (*xml, destData);
+    
 }
 
 void ProjectFourSynthAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -369,11 +375,7 @@ void ProjectFourSynthAudioProcessor::setStateInformation (const void* data, int 
     // whose contents will have been created by the getStateInformation() call.
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
-         
-    if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (apvts.state.getType()))
-            apvts.replaceState (juce::ValueTree::fromXml (*xmlState));
+    
 }
 
 //==============================================================================

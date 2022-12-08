@@ -75,6 +75,8 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
         oscillatorActives[i].setButtonText("Active");
         addAndMakeVisible(oscillatorActives[i]);
     }
+    oscillatorActives[0].setEnabled(true);
+    
     
     // ADSR
     adsrTitle.setText("ADSR", juce::dontSendNotification);
@@ -220,6 +222,21 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     addAndMakeVisible(densitySlider);
     reverbActive.setButtonText("Active");
     addAndMakeVisible(reverbActive);
+    
+    // Gain
+    /*
+     densitySlider.setSliderStyle(juce::Slider::LinearVertical);
+     densitySlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 60, 20);
+     densityLabel.attachToComponent(&densitySlider, false);
+     */
+    masterGainSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    masterGainSlider.setTextBoxStyle(juce::Slider::TextBoxRight, true, 40, 20);
+    masterGainSlider.setTextValueSuffix(" dB");
+    masterGainLabel.attachToComponent(&masterGainSlider, true);
+    masterGainLabel.setJustificationType(juce::Justification::centred);
+    masterGainLabel.setFont(16.f);
+    masterGainLabel.setText("Master Gain", juce::dontSendNotification);
+    addAndMakeVisible(masterGainSlider);
     
     // Filtering
     filterTypeBox.addItem("None", 1);
@@ -370,7 +387,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     densitySliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "density", densitySlider);
     reverbTypeBoxAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "algorithm", reverbTypeBox);
     reverbActiveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, "Reverb Active", reverbActive );
-    
+    masterGainSliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "Gain", masterGainSlider);
     
     addAndMakeVisible(xyPad);
     addAndMakeVisible(presetPanel);
@@ -406,6 +423,7 @@ void ProjectFourSynthAudioProcessorEditor::paint (juce::Graphics& g)
     g.drawRect(0, 15*y, 80.5*x, 42*y, 3);
     g.drawRect(0, 15*y, 104.2*x, 95.4*y, 3);
     g.drawRect(0, 15*y, 20.25*x, 42*y, 3);
+    g.drawRect(70*x, 7.5*y, 34.25*x, 8*y, 3);
     g.drawRect(0, 15*y, 40.25*x, 42*y, 3);
     g.drawRect(0, 15*y, 60.25*x, 42*y, 3);
     g.drawRect(0, 15*y, 80.5*x, 100*y, 3);
@@ -490,6 +508,11 @@ void ProjectFourSynthAudioProcessorEditor::resized()
     xyPadBoxXAxis.setBounds(xyPadStartPoint + 2.25*x, 18.5*y, xyPadSection/2 - x, 3*y);
     xyPadBoxYAxis.setBounds(xyPadStartPoint + xyPadSection/2 + 2.25*x, 18.5*y, xyPadSection/2 - x, 3*y);
     xyPad.setBounds(xyPadStartPoint+1.25*x, 23.5*y, xyPadSection+2*x, 43*y);
+    
+    // Gain
+    auto masterGainStartPoint = 80 * x;
+    masterGainSlider.setBounds(masterGainStartPoint - 0.5*x, 7.5*y, getWidth() - masterGainStartPoint - 0.75*x, 5*x);
+    
     
     presetPanel.setBounds(getLocalBounds().removeFromTop(proportionOfHeight(0.06f)));
 }
