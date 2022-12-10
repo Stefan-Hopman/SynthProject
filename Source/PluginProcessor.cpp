@@ -200,14 +200,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout ProjectFourSynthAudioProcess
     
     juce::StringArray algorithmList = {"Default","Reverse","Sped-up","Slowed"};
     
-    layout.add(std::make_unique<juce::AudioParameterFloat>("wet", "Wet",  normRangeVolume, -14));
-    layout.add(std::make_unique<juce::AudioParameterFloat>("delay", "Delay",  normRangeDelay, 500));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("wet", "Wet",  juce::NormalisableRange<float>(-120.f, 0.f, 0.5f, 1.4f), -14.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("delay", "Delay",  juce::NormalisableRange<float>(0.f, 2000.f, 1.f, 1.f), 250.f));
     layout.add(std::make_unique<juce::AudioParameterFloat>("density", "Density",  0, 100, 0));
     layout.add(std::make_unique<juce::AudioParameterChoice>("algorithm", "Algorithm", algorithmList, 0));
     layout.add(std::make_unique<juce::AudioParameterBool>("Reverb Active", "Reverb Active", false));
     
     // Gain parameters
-    layout.add(std::make_unique<juce::AudioParameterFloat>("Gain", "Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), -6.f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("Gain", "Gain", juce::NormalisableRange<float>(-60.f, 0.f, 1.f, 1.25f), 0.f));
 
     return layout;
    

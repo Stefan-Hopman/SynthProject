@@ -65,10 +65,10 @@ std::vector<float> WavetableSynth::generateTriangularWaveTable()
 
 std::vector<float> WavetableSynth::generateSquareWaveTable()
 {
-    const float moduloInc = 1.f/_WaveTableLength;
-    float modulo = 0.f;
     // length of the square table
     std::vector<float> squareWaveTable = std::vector<float>(_WaveTableLength);
+    const float moduloInc = 1.f/_WaveTableLength;
+    float modulo = 0.f;
     for(int i = 0; i < _WaveTableLength; i++)
     {
         if (modulo >= 1.f)

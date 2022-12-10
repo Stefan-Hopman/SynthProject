@@ -17,7 +17,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     // editor's size to whatever you need it to be.
     // Setting the label of the app
     setSize(1042.75, 600);
-    appTitle.setText("Project 4 Synth", juce::dontSendNotification);
+    appTitle.setText("Synth Meister", juce::dontSendNotification);
     appTitle.setFont(44.f);
     appTitle.setJustificationType(juce::Justification::centredTop);
     addAndMakeVisible(appTitle);
@@ -157,7 +157,7 @@ ProjectFourSynthAudioProcessorEditor::ProjectFourSynthAudioProcessorEditor (Proj
     
     // Distorsion
     distorsionTypeBox.addItem("None", 1);
-    distorsionTypeBox.addItem("Hyperbolic Tangent", 2);
+    distorsionTypeBox.addItem("Tanh", 2);
     distorsionTypeBox.addItem("Arc Tangent", 3);
     distorsionTypeBox.addItem("Fuzz", 4);
     distorsionTypeBox.setJustificationType(juce::Justification::centred);
